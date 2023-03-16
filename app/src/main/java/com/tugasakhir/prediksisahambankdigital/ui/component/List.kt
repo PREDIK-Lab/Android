@@ -115,7 +115,7 @@ fun PrediksiSahamList(
                         modifier = modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.W700
                     )
 
                     Spacer(Modifier.weight(1f))
