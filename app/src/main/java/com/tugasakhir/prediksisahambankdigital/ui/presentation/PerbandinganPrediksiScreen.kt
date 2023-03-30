@@ -43,12 +43,6 @@ import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModel
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModelFactory
 
-private val perbandinganPrediksiList =
-    listOf(
-        PerbandinganPrediksiItem("Harga saham hari ini", 22.0F, R.drawable.up_arrow),
-        PerbandinganPrediksiItem("Harga saham hari ini", 22.0F, R.drawable.down_arrow)
-    )
-
 @Composable
 fun PerbandinganPrediksiScreen(
     modifier: Modifier,
@@ -77,6 +71,10 @@ fun PerbandinganPrediksiScreen(
     else
         Icons.Filled.KeyboardArrowDown
 
+    var hargaPenutupanSaatIni: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var hargaPenutupanSebelumnya: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var hargaPenutupanBesok: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
     var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
@@ -91,8 +89,11 @@ fun PerbandinganPrediksiScreen(
                         //Text("Loading")
                     }
                     is Resource.Success -> {
-                        //Log.d("Grafik", "Ukuran: " + it.data?.rmseGRU.toString())
+                        Log.d("Hasil", it.data!!.prediksiLSTM[0].toString())
+                        rmseLSTM = it.data?.rmseLSTM
                         rmseGRU = it.data?.rmseGRU
+                        hargaPenutupanSaatIni = it.data?.hargaPenutupanSaatIni
+                        hargaPenutupanBesok = it.data!!.prediksiLSTM[0].prediksiHargaPenutupan
                     }
                     is Resource.Error -> {
 
@@ -106,7 +107,6 @@ fun PerbandinganPrediksiScreen(
                         //Text("Loading")
                     }
                     is Resource.Success -> {
-                        Log.d("Grafik", "Ukuran: " + it.data?.size.toString())
                         ukuran = it.data?.size
                         grafikSahamList = it.data
                     }
@@ -140,7 +140,6 @@ fun PerbandinganPrediksiScreen(
                     readOnly = true,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
                         .onGloballyPositioned { coordinates ->
                             // This value is used to assign to
                             // the DropDown the same width
@@ -211,9 +210,23 @@ fun PerbandinganPrediksiScreen(
                 modifier = Modifier.padding(start = 15.dp, end = 15.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                PerbandinganPrediksiBox(modifier.weight(1f), perbandinganPrediksiList[0])
+                PerbandinganPrediksiBox(
+                    modifier.weight(1f),
+                    PerbandinganPrediksiItem(
+                        "Harga penutupan saham hari ini",
+                        hargaPenutupanSaatIni!!,
+                        if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.up_arrow else R.drawable.down_arrow
+                    )
+                )
                 Spacer(Modifier.weight(0.1f))
-                PerbandinganPrediksiBox(modifier.weight(1f), perbandinganPrediksiList[1])
+                PerbandinganPrediksiBox(
+                    modifier.weight(1f),
+                    PerbandinganPrediksiItem(
+                        "Prediksi harga penutupan saham besok",
+                        hargaPenutupanBesok!!,
+                        if (hargaPenutupanBesok!! >= hargaPenutupanSaatIni!!) R.drawable.up_arrow else R.drawable.down_arrow
+                    )
+                )
             }
 
             Spacer(modifier = modifier.height(15.dp))
@@ -254,10 +267,14 @@ fun PerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: List<Gr
     val chartEntryModel = entryModelOf(*hargaPenutupanList)
 
     Chart(
-        chart = lineChart(),
+        chart = lineChart(spacing = 0.0.dp),
         modifier = modifier.padding(start = 15.dp, end = 15.dp),
         startAxis = startAxis(),
-        bottomAxis = bottomAxis(tickPosition = HorizontalAxis.TickPosition.Center(1, 20)),
-        model = chartEntryModel,
+        bottomAxis = bottomAxis(
+            tickPosition = HorizontalAxis.TickPosition.Center(1, 20),
+            //sizeConstraint = Axis.SizeConstraint.Exact(1500f)
+        ),
+        isZoomEnabled = true,
+        model = chartEntryModel
     )
 }

@@ -20,6 +20,9 @@ data class DetailPrediksiResponse(
     @field:SerializedName("harga_penutupan_saat_ini")
     val hargaPenutupanSaatIni: Float,
 
+    @field:SerializedName("harga_penutupan_sebelumnya")
+    val hargaPenutupanSebelumnya: Float,
+
     @field:SerializedName("prediksi")
     val prediksi: List<DetailDetailPrediksiResponse>,
 

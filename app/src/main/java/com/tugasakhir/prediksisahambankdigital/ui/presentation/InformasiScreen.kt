@@ -38,6 +38,12 @@ fun InformasiScreen(
 
             // context.startActivity(Intent(context, PanduanPenggunaanActivity::class.java))
         }
+        else if (it == "Tentang Aplikasi") {
+            navController.navigate(ScreenRoute.TentangAplikasi.createRoute())
+        }
+        else if (it == "Kontak") {
+            navController.navigate(ScreenRoute.Kontak.createRoute())
+        }
     }
 
     Surface(modifier = modifier) {

@@ -8,6 +8,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.DetailPrediksi
 import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.domain.model.Prediksi
+import kotlin.math.roundToInt
 
 object DataMapper {
     fun mapResponseToPrediksi(input: List<ListPrediksiResponse>): List<Prediksi> {
@@ -46,6 +47,7 @@ object DataMapper {
 
         return Prediksi(
             input.hasilLSTM.hargaPenutupanSaatIni,
+            input.hasilLSTM.hargaPenutupanSebelumnya,
             listPrediksiLSTM,
             input.hasilLSTM.rmse,
             listPrediksiGRU,

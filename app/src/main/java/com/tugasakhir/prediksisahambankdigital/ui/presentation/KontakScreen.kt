@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.tugasakhir.prediksisahambankdigital.util.PageTopAppBar
 
 @Composable
-fun PanduanPenggunaanScreen(navigateBack: () -> Unit) {
+fun KontakScreen(navigateBack: () -> Unit) {
     Scaffold(
         topBar = { PageTopAppBar(navigateBack) }
     ) {

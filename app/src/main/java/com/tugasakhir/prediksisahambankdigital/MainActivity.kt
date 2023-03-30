@@ -110,8 +110,36 @@ fun NavHostContainer(
                 )
             }
 
+            // Panduan Penggunaan
             composable(ScreenRoute.PanduanPenggunaan.route) {
-                PanduanPengunaanScreen(
+                PanduanPenggunaanScreen(
+                    navigateBack = {
+                        navController.navigateUp()
+                    },
+                )
+            }
+
+            // Tentang Aplikasi
+            composable(ScreenRoute.TentangAplikasi.route) {
+                TentangAplikasiScreen(
+                    navigateBack = {
+                        navController.navigateUp()
+                    },
+                )
+            }
+
+            // Tentang Pengembang
+            composable(ScreenRoute.TentangPengembang.route) {
+                TentangPengembangScreen(
+                    navigateBack = {
+                        navController.navigateUp()
+                    },
+                )
+            }
+
+            // Kontak
+            composable(ScreenRoute.Kontak.route) {
+                KontakScreen(
                     navigateBack = {
                         navController.navigateUp()
                     },

@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.core.axis.Axis
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.tugasakhir.prediksisahambankdigital.PerbandinganPrediksiItem
@@ -240,7 +241,10 @@ fun DetailPerbandinganPrediksiScreen(
                             .height(300.dp),
                         shape = RoundedCornerShape(20.dp)
                     ) {
-                        PrediksiSahamList(hargaSahamSaatIni = hargaSahamSaatIni, list = prediksiLSTMList!!)
+                        PrediksiSahamList(
+                            hargaSahamSaatIni = hargaSahamSaatIni,
+                            list = prediksiLSTMList!!
+                        )
                     }
 
                     Spacer(Modifier.weight(0.1f))
@@ -251,7 +255,10 @@ fun DetailPerbandinganPrediksiScreen(
                             .height(300.dp),
                         shape = RoundedCornerShape(20.dp)
                     ) {
-                        PrediksiSahamList(hargaSahamSaatIni = hargaSahamSaatIni, list = prediksiGRUList!!)
+                        PrediksiSahamList(
+                            hargaSahamSaatIni = hargaSahamSaatIni,
+                            list = prediksiGRUList!!
+                        )
                     }
                 }
 
@@ -283,10 +290,13 @@ fun DetailPerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: L
     val chartEntryModel = entryModelOf(*hargaPenutupanList)
 
     Chart(
-        chart = lineChart(),
+        chart = lineChart(spacing = 1.dp),
         modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        startAxis = startAxis(),
-        bottomAxis = bottomAxis(tickPosition = HorizontalAxis.TickPosition.Center(1, 20)),
+        startAxis = startAxis(maxLabelCount = 70),
+        bottomAxis = bottomAxis(
+            tickPosition = HorizontalAxis.TickPosition.Center(1, 70),
+            sizeConstraint = Axis.SizeConstraint.Auto()
+        ),
         model = chartEntryModel,
     )
 }

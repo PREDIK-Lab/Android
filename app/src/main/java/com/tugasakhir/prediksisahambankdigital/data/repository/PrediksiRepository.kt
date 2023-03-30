@@ -31,7 +31,8 @@ class PrediksiRepository(
                 remoteDataSource.getAllPrediksi(kodeSaham)
 
             override suspend fun saveCallResult(data: List<ListPrediksiResponse>): Flow<List<Prediksi>> =
-                remoteDataSource.getAllPrediksi(kodeSaham).map { DataMapper.mapResponseToPrediksi(data) }
+                remoteDataSource.getAllPrediksi(kodeSaham)
+                    .map { DataMapper.mapResponseToPrediksi(data) }
 
         }.asFlow()
 

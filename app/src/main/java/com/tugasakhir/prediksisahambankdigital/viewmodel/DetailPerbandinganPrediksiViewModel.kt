@@ -12,10 +12,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.usecase.GrafikUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.InformasiUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.PrediksiUseCase
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class DetailPerbandinganPrediksiViewModel(
@@ -52,7 +49,9 @@ class DetailPerbandinganPrediksiViewModel(
             val callGrafik = async { grafikUseCase.getGrafik(mutableKodeSaham.value) }
             val callInformasi = async { informasiUseCase.getInformasi(mutableKodeSaham.value) }
 
-            callPrediksi.await().distinctUntilChanged().collect {
+            callPrediksi.await().distinctUntilChanged().filter {
+                it !== Resource.Loading("")
+            }.collectLatest {
                 try {
                     mutablePrediksi.value = Resource.Success(it.data!!)
                 } catch (ex: Exception) {
@@ -61,7 +60,9 @@ class DetailPerbandinganPrediksiViewModel(
                 }
             }
 
-            callGrafik.await().distinctUntilChanged().collect {
+            callGrafik.await().distinctUntilChanged().filter {
+                it !== Resource.Loading("")
+            }.collectLatest {
                 try {
                     mutableGrafik.value = Resource.Success(it.data!!)
                 } catch (ex: Exception) {
@@ -70,7 +71,9 @@ class DetailPerbandinganPrediksiViewModel(
                 }
             }
 
-            callInformasi.await().distinctUntilChanged().collect {
+            callInformasi.await().distinctUntilChanged().filter {
+                it !== Resource.Loading("")
+            }.collectLatest {
                 try {
                     mutableInformasi.value = Resource.Success(it.data!!)
                 } catch (ex: Exception) {

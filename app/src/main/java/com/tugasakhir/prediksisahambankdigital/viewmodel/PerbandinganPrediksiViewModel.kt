@@ -1,6 +1,5 @@
 package com.tugasakhir.prediksisahambankdigital.viewmodel
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -11,10 +10,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Prediksi
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.GrafikUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.PrediksiUseCase
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class PerbandinganPrediksiViewModel(
@@ -44,7 +40,9 @@ class PerbandinganPrediksiViewModel(
             val callPrediksi = async { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
             val callGrafik = async { grafikUseCase.getGrafik(mutableKodeSaham.value) }
 
-            callPrediksi.await().distinctUntilChanged().collect {
+            callPrediksi.await().distinctUntilChanged().filter {
+                it !== Resource.Loading("")
+            }.collectLatest {
                 try {
                     mutablePrediksi.value = Resource.Success(it.data!!)
                 } catch (ex: Exception) {
@@ -53,7 +51,9 @@ class PerbandinganPrediksiViewModel(
                 }
             }
 
-            callGrafik.await().distinctUntilChanged().collect {
+            callGrafik.await().distinctUntilChanged().filter {
+                it !== Resource.Loading("")
+            }.collectLatest {
                 try {
                     mutableGrafik.value = Resource.Success(it.data!!)
                 } catch (ex: Exception) {

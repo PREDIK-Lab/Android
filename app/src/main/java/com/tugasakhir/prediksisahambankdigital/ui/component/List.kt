@@ -130,17 +130,17 @@ fun PrediksiSahamList(
 
                     Spacer(Modifier.weight(1f))
 
-                    Image(
-                        painter = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) painterResource(
-                            R.drawable.up_arrow
-                        ) else painterResource(
-                            R.drawable.down_arrow
-                        ),
-                        contentDescription = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) "Up" else "Down",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .padding(end = 15.dp),
-                    )
+//                    Image(
+//                        painter = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) painterResource(
+//                            R.drawable.up_arrow
+//                        ) else painterResource(
+//                            R.drawable.down_arrow
+//                        ),
+//                        contentDescription = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) "Up" else "Down",
+//                        modifier = Modifier
+//                            .size(50.dp)
+//                            .padding(end = 15.dp),
+//                    )
                 }
 
                 Divider(
