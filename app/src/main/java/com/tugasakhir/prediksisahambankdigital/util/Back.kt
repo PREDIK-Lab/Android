@@ -13,13 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+/**
+ * Memanggil TopAppBar untuk indikasi kembali
+ */
 @Composable
 fun PageTopAppBar(onBack: () -> Unit, title: String = "") {
     TopAppBar(
         modifier = Modifier.height(60.dp),
         title = {
             Text(
-                text = "A"
+                text = title
             )
         },
         navigationIcon = {
