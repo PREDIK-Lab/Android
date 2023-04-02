@@ -74,7 +74,7 @@ fun App(
 
 @Composable
 fun NavHostContainer(
-    navController: NavHostController,
+    navController: NavHostController = rememberNavController(),
     padding: PaddingValues
 ) {
     NavHost(
@@ -120,20 +120,22 @@ fun NavHostContainer(
             }
 
             // Tentang Aplikasi
-            composable(ScreenRoute.TentangAplikasi.route) {
+            composable(route = ScreenRoute.TentangAplikasi.route) {
                 TentangAplikasiScreen(
                     navigateBack = {
                         navController.navigateUp()
                     },
+                    navController
                 )
             }
 
             // Tentang Pengembang
-            composable(ScreenRoute.TentangPengembang.route) {
+            composable(route = ScreenRoute.TentangPengembang.route) {
                 TentangPengembangScreen(
                     navigateBack = {
                         navController.navigateUp()
                     },
+                    navController
                 )
             }
 

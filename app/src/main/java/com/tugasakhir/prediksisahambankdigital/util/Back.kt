@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PageTopAppBar(onBack: () -> Unit) {
+fun PageTopAppBar(onBack: () -> Unit, title: String = "") {
     TopAppBar(
         modifier = Modifier.height(60.dp),
         title = {

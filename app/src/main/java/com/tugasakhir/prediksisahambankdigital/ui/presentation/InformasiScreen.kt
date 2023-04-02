@@ -37,11 +37,9 @@ fun InformasiScreen(
             navController.navigate(ScreenRoute.PanduanPenggunaan.createRoute())
 
             // context.startActivity(Intent(context, PanduanPenggunaanActivity::class.java))
-        }
-        else if (it == "Tentang Aplikasi") {
+        } else if (it == "Tentang Aplikasi") {
             navController.navigate(ScreenRoute.TentangAplikasi.createRoute())
-        }
-        else if (it == "Kontak") {
+        } else if (it == "Kontak") {
             navController.navigate(ScreenRoute.Kontak.createRoute())
         }
     }
