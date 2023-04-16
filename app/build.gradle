@@ -51,6 +51,8 @@ android {
 }
 
 dependencies {
+    implementation project(":libs:Composable-Graphs")
+
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
@@ -90,4 +92,8 @@ dependencies {
 
     // For `compose`. Creates a `ChartStyle` based on an M3 Material Theme.
     implementation "com.patrykandpatrick.vico:compose-m3:1.6.4"
+
+    implementation 'com.valentinilk.shimmer:compose-shimmer:1.0.4'
+
+//    implementation 'com.github.jaikeerthick:Composable-Graphs:v1.0'
 }

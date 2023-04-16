@@ -70,8 +70,7 @@ fun SplashScreenTextVersion(modifier: Modifier) {
 @Composable
 fun SplashScreenTextAddition(modifier: Modifier) {
     Row(
-        modifier = modifier
-            .fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {

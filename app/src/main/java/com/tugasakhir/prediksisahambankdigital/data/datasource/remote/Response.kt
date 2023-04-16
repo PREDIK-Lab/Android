@@ -1,7 +1,6 @@
 package com.tugasakhir.prediksisahambankdigital.data.datasource.remote
 
 import com.google.gson.annotations.SerializedName
-import java.time.LocalDateTime
 
 data class ListPrediksiResponse(
     @field:SerializedName("harga_penutupan")

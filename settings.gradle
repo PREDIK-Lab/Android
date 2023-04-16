@@ -27,4 +27,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Prediksi Saham Bank Digital"
+
 include ':app'
+include ':libs:Composable-Graphs'

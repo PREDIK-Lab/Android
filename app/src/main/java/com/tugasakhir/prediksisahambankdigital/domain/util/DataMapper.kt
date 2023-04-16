@@ -37,7 +37,7 @@ object DataMapper {
         }
 
         input.hasilGRU.prediksi.map {
-            listPrediksiLSTM.add(
+            listPrediksiGRU.add(
                 DetailPrediksi(
                     it.prediksiHargaPenutupan,
                     it.tanggal

@@ -1,7 +1,10 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -13,22 +16,27 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.axis.Axis
-import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
-import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.jaikeerthick.composable_graphs.color.*
+import com.jaikeerthick.composable_graphs.composables.LineGraph
+import com.jaikeerthick.composable_graphs.data.GraphData
+import com.jaikeerthick.composable_graphs.style.LineGraphStyle
+import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
+
 import com.tugasakhir.prediksisahambankdigital.PerbandinganPrediksiItem
+import com.tugasakhir.prediksisahambankdigital.R
 import com.tugasakhir.prediksisahambankdigital.SahamItem
 import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.domain.model.DetailPrediksi
@@ -38,6 +46,7 @@ import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
 import com.tugasakhir.prediksisahambankdigital.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.viewmodel.DetailPerbandinganPrediksiViewModel
 import com.tugasakhir.prediksisahambankdigital.viewmodel.DetailPerbandinganPrediksiViewModelFactory
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun DetailPerbandinganPrediksiScreen(
@@ -95,10 +104,11 @@ fun DetailPerbandinganPrediksiScreen(
                 "",
                 "",
                 0,
-                ""
+                "4"
             )
         )
     }
+    var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
 
     detailPerbandinganPrediksiViewModel.setKodeSaham(key)
 
@@ -107,14 +117,15 @@ fun DetailPerbandinganPrediksiScreen(
             prediksi.value.let {
                 when (it) {
                     is Resource.Loading -> {
-                        //Text("Loading")
+                        isLoading = true
                     }
                     is Resource.Success -> {
+                        isLoading = false
                         prediksiLSTMList = it.data!!.prediksiLSTM
                         prediksiGRUList = it.data!!.prediksiGRU
                     }
                     is Resource.Error -> {
-
+                        isLoading = false
                     }
                 }
             }
@@ -122,14 +133,15 @@ fun DetailPerbandinganPrediksiScreen(
             grafik.value.let {
                 when (it) {
                     is Resource.Loading -> {
-                        //Text("Loading")
+                        isLoading = true
                     }
                     is Resource.Success -> {
+                        isLoading = false
                         ukuran = it.data?.size
                         grafikSahamList = it.data
                     }
                     is Resource.Error -> {
-
+                        isLoading = false
                     }
                 }
             }
@@ -137,13 +149,22 @@ fun DetailPerbandinganPrediksiScreen(
             informasi.value.let {
                 when (it) {
                     is Resource.Loading -> {
-                        //Text("Loading")
+                        isLoading = true
                     }
                     is Resource.Success -> {
-
+                        isLoading = false
+                        informasiSaham = Informasi(
+                            it.data!!.tentangPerusahaan,
+                            it.data.sektor,
+                            it.data.industri,
+                            it.data.negara,
+                            it.data.alamat,
+                            it.data.jumlahPegawai,
+                            it.data.tanggalDividenTerakhir
+                        )
                     }
                     is Resource.Error -> {
-
+                        isLoading = false
                     }
                 }
             }
@@ -193,17 +214,37 @@ fun DetailPerbandinganPrediksiScreen(
                         .padding(start = 15.dp, end = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(
-                        text = "Harga Saham Saat Ini",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                    if (isLoading == false) {
+                        Text(
+                            text = "Harga Saham Saat Ini",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
 
-                    Text(
-                        text = "a",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                        Text(
+                            text = hargaSahamSaatIni.toString(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    } else {
+                        Box(
+                            modifier = Modifier
+                                .shimmer()
+                                .background(Color.Gray)
+                                .width(130.dp)
+                                .height(20.dp)
+                                .background(Color.Gray)
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .shimmer()
+                                .background(Color.Gray)
+                                .width(65.dp)
+                                .height(20.dp)
+                                .background(Color.Gray)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(50.dp))
@@ -228,6 +269,10 @@ fun DetailPerbandinganPrediksiScreen(
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
+
+                /**
+                 * Detail Perbandingan Harga Close Saham
+                 */
 
                 Row(
                     modifier = Modifier
@@ -264,11 +309,25 @@ fun DetailPerbandinganPrediksiScreen(
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                DetailPerbandinganPrediksiGrafikSaham(Modifier, grafikSahamList!!)
+                /**
+                 * Grafik Saham
+                 */
+                if (isLoading == false) {
+                    DetailPerbandinganPrediksiGrafikSaham(Modifier, grafikSahamList!!)
+                } else {
+                    DetailPerbandinganPrediksiGrafikSahamShimmer(Modifier)
+                }
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                DetailPerbandinganPrediksiTentangSaham(Modifier)
+                /**
+                 * Informasi Saham
+                 */
+                if (isLoading == false) {
+                    DetailPerbandinganPrediksiTentangSaham(Modifier, informasiSaham)
+                } else {
+                    DetailPerbandinganPrediksiTentangSahamShimmer(Modifier)
+                }
             }
         }
     }
@@ -285,28 +344,321 @@ fun DetailPerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: L
 
     Spacer(modifier = modifier.height(30.dp))
 
+    val lineGraphStyle = LineGraphStyle(
+        paddingValues = PaddingValues(
+            start = 15.dp,
+            end = 15.dp
+        ),
+        height = 250.dp,
+        visibility = LinearGraphVisibility(
+            isHeaderVisible = false,
+            isXAxisLabelVisible = true,
+            isYAxisLabelVisible = true,
+            isCrossHairVisible = false
+        ),
+        colors = LinearGraphColors(
+            lineColor = GraphAccent2,
+            pointColor = Color.Transparent,
+            clickHighlightColor = PointHighlight2,
+            fillGradient = Brush.verticalGradient(
+                listOf(Gradient3, Gradient2)
+            )
+        )
+    )
+
+    val tanggalList = grafikSahamList.map { it.tanggal }.toTypedArray()
     val hargaPenutupanList = grafikSahamList.map { it.hargaPenutupan }.toTypedArray()
 
-    val chartEntryModel = entryModelOf(*hargaPenutupanList)
+    val xAxisData = tanggalList.map {
+        GraphData.String(it)
+    }
 
-    Chart(
-        chart = lineChart(spacing = 1.dp),
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        startAxis = startAxis(maxLabelCount = 70),
-        bottomAxis = bottomAxis(
-            tickPosition = HorizontalAxis.TickPosition.Center(1, 70),
-            sizeConstraint = Axis.SizeConstraint.Auto()
-        ),
-        model = chartEntryModel,
+    LineGraph(
+        xAxisData = xAxisData,
+        yAxisData = hargaPenutupanList.toList(),
+        style = lineGraphStyle
     )
+
+//    val chartEntryModel = entryModelOf(*hargaPenutupanList)
+//
+//    Chart(
+//        chart = lineChart(spacing = 1.dp),
+//        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+//        startAxis = startAxis(maxLabelCount = 70),
+//        bottomAxis = bottomAxis(
+//            tickPosition = HorizontalAxis.TickPosition.Center(1, 70),
+//            sizeConstraint = Axis.SizeConstraint.Auto()
+//        ),
+//        model = chartEntryModel,
+//    )
 }
 
 @Composable
-fun DetailPerbandinganPrediksiTentangSaham(modifier: Modifier) {
+fun DetailPerbandinganPrediksiTentangSaham(modifier: Modifier, informasiSaham: Informasi) {
     Text(
         modifier = Modifier.padding(start = 15.dp, end = 15.dp),
         text = "Tentang Saham",
         fontSize = 30.sp,
         fontWeight = FontWeight.Bold
     )
+
+    Spacer(modifier = Modifier.height(30.dp))
+
+    Column {
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier.size(80.dp)
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Text(
+                text = "Nama saham",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Text(
+            text = informasiSaham.tentangPerusahaan,
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp),
+            fontSize = 15.sp,
+            lineHeight = 23.sp
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Text(
+                text = informasiSaham.sektor + ", " + informasiSaham.industri,
+                fontSize = 15.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Text(
+                text = informasiSaham.alamat,
+                fontSize = 15.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painterResource(id = R.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(40.dp)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Text(
+                text = informasiSaham.alamat,
+                fontSize = 15.sp
+            )
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+    }
+}
+
+@Composable
+fun DetailPerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
+    Text(
+        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+        text = "Grafik Saham",
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold
+    )
+
+    Spacer(modifier = modifier.height(30.dp))
+
+    Box(
+        modifier = Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .shimmer()
+            .fillMaxWidth()
+            .height(200.dp)
+            .background(Color.Gray)
+    )
+}
+
+@Composable
+fun DetailPerbandinganPrediksiTentangSahamShimmer(modifier: Modifier) {
+    Text(
+        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+        text = "Tentang Saham",
+        fontSize = 30.sp,
+        fontWeight = FontWeight.Bold
+    )
+
+    Spacer(modifier = Modifier.height(30.dp))
+
+    Column {
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .size(80.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .width(120.dp)
+                    .height(20.dp)
+                    .background(Color.Gray)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Box(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .shimmer()
+                .width(180.dp)
+                .height(15.dp)
+                .background(Color.Gray)
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .width(70.dp)
+                    .height(15.dp)
+                    .background(Color.Gray)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .width(70.dp)
+                    .height(15.dp)
+                    .background(Color.Gray)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+
+        Row(
+            modifier = Modifier
+                .padding(start = 15.dp, end = 15.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+            )
+
+            Spacer(modifier = Modifier.width(15.dp))
+
+            Box(
+                modifier = Modifier
+                    .shimmer()
+                    .width(70.dp)
+                    .height(15.dp)
+                    .background(Color.Gray)
+            )
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
+    }
 }
