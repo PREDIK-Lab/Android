@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.tugasakhir.prediksisahambankdigital.R
-import com.tugasakhir.prediksisahambankdigital.util.PageTopAppBar
+import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 
 @Composable
 fun TentangPengembangScreen(

@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.tugasakhir.prediksisahambankdigital.ui.component.InformasiAplikasiList
 import com.tugasakhir.prediksisahambankdigital.ui.component.OnItemClick
-import com.tugasakhir.prediksisahambankdigital.util.PageTopAppBar
+import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 
 private val kontakList =
     mapOf(

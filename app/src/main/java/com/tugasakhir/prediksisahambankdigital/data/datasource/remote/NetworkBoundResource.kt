@@ -13,7 +13,7 @@ abstract class RemoteNetworkBoundResource<ResultType, RequestType> {
             }
             is APIResponse.Empty -> {
                 onFetchFailed()
-                emit(Resource.Error("The data is not available"))
+                emit(Resource.Error("Data tidak tersedia."))
             }
             is APIResponse.Error -> {
                 onFetchFailed()

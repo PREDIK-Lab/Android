@@ -8,7 +8,7 @@ import androidx.compose.ui.graphics.Color
 
 
 val GraphAccent = Color(0xFF9C27B0)
-val GraphAccent2 = Color(0xFF239728)
+val GraphAccent2 = Color(0xFF29CA0E)
 
 val Gradient1 = Color(0x549C27B0)
 val Gradient2 = Color(0x00FFFFFF)

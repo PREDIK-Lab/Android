@@ -18,6 +18,7 @@ android {
 //        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        buildConfigField("String", "LOGO_URL", '"https://logo.clearbit.com/"')
         vectorDrawables {
             useSupportLibrary true
         }
@@ -94,6 +95,7 @@ dependencies {
     implementation "com.patrykandpatrick.vico:compose-m3:1.6.4"
 
     implementation 'com.valentinilk.shimmer:compose-shimmer:1.0.4'
-
 //    implementation 'com.github.jaikeerthick:Composable-Graphs:v1.0'
+
+    implementation("io.coil-kt:coil-compose:2.0.0-rc01")
 }

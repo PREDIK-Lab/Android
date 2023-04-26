@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.composables
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -8,7 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
@@ -28,18 +29,23 @@ import kotlin.math.sqrt
 fun LineGraph(
     xAxisData: List<GraphData>,
     yAxisData: List<Number>,
-    header: @Composable() () -> Unit = {},
+    header: @Composable () -> Unit = {},
     style: LineGraphStyle = LineGraphStyle(),
-    onPointClicked: (pair: Pair<Any, Any>) -> Unit = {},
+    onPointClicked: (pair: Pair<Any, Any>) -> Unit = { },
+    index: Int,
+    clickedOffset: MutableState<Offset?>
 ) {
+//    val xAxisData = if (index > 0) xAxisDataRaw.takeLast(index) else xAxisDataRaw
+//    val yAxisData = if (index > 0) yAxisDataRaw.takeLast(index) else yAxisDataRaw
+
+    Log.d("dmm", index.toString())
 
     val yAxisPadding: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
     val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
-    val offsetList = remember { mutableListOf<Offset>() }
-    val isPointClicked = remember { mutableStateOf(false) }
-    val clickedPoint: MutableState<Offset?> = remember { mutableStateOf(null) }
-
+    val offsetList = rememberSaveable { mutableListOf<Offset>() }
+    val isPointClicked = rememberSaveable { mutableStateOf(false) }
+    val clickedPoint: MutableState<Offset?> = clickedOffset
 
     Column(
         modifier = Modifier
@@ -48,8 +54,8 @@ fun LineGraph(
             )
             .fillMaxWidth()
             .padding(style.paddingValues)
-            .padding(top = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(top = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
 
     ) {
 
@@ -61,7 +67,7 @@ fun LineGraph(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(style.height)
-                .padding(horizontal = 10.dp)
+                .padding(end = 15.dp)
                 .pointerInput(true) {
 
                     detectTapGestures { p1: Offset ->
@@ -78,7 +84,7 @@ fun LineGraph(
 
                             val distance = sqrt(
                                 (p1.x - p2.x).pow(2) + (p1.y - p2.y).pow(2)
-                            )
+                            ) + 1
                             val pointRadius = 15.dp.toPx()
 
                             distance <= pointRadius
@@ -89,9 +95,19 @@ fun LineGraph(
                             clickedPoint.value = it
                             isPointClicked.value = true
 
-                            //
-                            val index = offsetList.indexOf(it)
-                            onPointClicked(Pair(xAxisData[index].text, yAxisData[index]))
+                            val i = offsetList.indexOf(it)
+
+                            val xData =
+                                if (offsetList.size < xAxisData.size) xAxisData.takeLast(offsetList.size) else xAxisData
+                            val yData =
+                                if (offsetList.size < yAxisData.size) yAxisData.takeLast(offsetList.size) else yAxisData
+
+                            onPointClicked(
+                                Pair(
+                                    xData[i].text,
+                                    yData[i]
+                                )
+                            )
                         }
 
                     }
@@ -123,16 +139,14 @@ fun LineGraph(
 
             for (i in 0..maxPointsSize) {
                 val intervalValue = (verticalStep * i).roundToInt()
-                println("interval - $intervalValue")
+                //println("interval - $intervalValue")
                 yAxisLabelList.add(intervalValue.toString())
             }
-
 
             val xItemSpacing = if (style.yAxisLabelPosition == LabelPosition.RIGHT) {
                 gridWidth / (maxPointsSize - 1)
             } else (gridWidth - yAxisPadding.toPx()) / (maxPointsSize - 1)
             val yItemSpacing = gridHeight / (yAxisLabelList.size - 1)
-
 
             /**
              * Drawing Grid lines
@@ -172,17 +186,18 @@ fun LineGraph(
              */
             if (style.visibility.isXAxisLabelVisible) {
 
-                val xDivideResult = (maxPointsSize / 10).toInt()
-                val xNthDisplay = xDivideResult * maxPointsSize.toString().length
+                val xDivideResult = yAxisData.size / 10
+                val xNthDisplay =
+                    xDivideResult * (yAxisData.size - index).toString().length + if (index == 0) 1 else index / 3
 
                 for (i in 0 until maxPointsSize) {
 
                     val labelXOffset =
                         if (style.yAxisLabelPosition == LabelPosition.RIGHT) xItemSpacing * (i) else (xItemSpacing * (i)) + yAxisPadding.toPx()
 
-                    if (i % xNthDisplay == 0) {
+                    if (i != 0 && i % xNthDisplay == 0) {
                         drawContext.canvas.nativeCanvas.drawText(
-                            "${xAxisData[i].text}",
+                            xAxisData[i].text,
                             labelXOffset, // x
                             size.height, // y
                             Paint().apply {
@@ -204,13 +219,13 @@ fun LineGraph(
                 val labelXOffset =
                     if (style.yAxisLabelPosition == LabelPosition.RIGHT) size.width else 0F
 
-                val yDivideResult = (yAxisLabelList.size / 10).toInt()
+                val yDivideResult = (yAxisLabelList.size / 10)
                 val yNthDisplay = yDivideResult * yAxisLabelList.size.toString().length
 
                 for (i in 0 until yAxisLabelList.size) {
                     if (i % yNthDisplay == 0) {
                         drawContext.canvas.nativeCanvas.drawText(
-                            "${yAxisLabelList[i]}",
+                            yAxisLabelList[i],
                             labelXOffset, //x
                             gridHeight - yItemSpacing * (i + 0), //y
                             Paint().apply {
@@ -250,11 +265,10 @@ fun LineGraph(
 
                 drawCircle(
                     color = style.colors.pointColor,
-                    radius = 5.dp.toPx(),
+                    radius = 3.dp.toPx(),
                     center = Offset(x1, y1)
                 )
             }
-
 
             /**
              * Drawing Gradient fill for the plotted points
@@ -308,8 +322,9 @@ fun LineGraph(
                 drawCircle(
                     color = style.colors.clickHighlightColor,
                     center = it,
-                    radius = 12.dp.toPx()
+                    radius = 13.dp.toPx()
                 )
+
                 if (style.visibility.isCrossHairVisible) {
                     drawLine(
                         color = style.colors.crossHairColor,
@@ -325,8 +340,6 @@ fun LineGraph(
 
         }
     }
-
-
 }
 
 

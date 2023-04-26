@@ -1,4 +1,4 @@
-package com.tugasakhir.prediksisahambankdigital.util
+package com.tugasakhir.prediksisahambankdigital.ui.util
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding

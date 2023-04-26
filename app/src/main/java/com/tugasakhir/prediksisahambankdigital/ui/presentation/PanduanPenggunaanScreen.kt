@@ -9,7 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.tugasakhir.prediksisahambankdigital.util.PageTopAppBar
+import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 
 @Composable
 fun PanduanPenggunaanScreen(navigateBack: () -> Unit) {

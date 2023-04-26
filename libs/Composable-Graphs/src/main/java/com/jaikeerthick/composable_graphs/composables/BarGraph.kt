@@ -107,16 +107,13 @@ fun BarGraph(
 
             println("max point size - $maxPointsSize")
 
-
             for (i in 0..dataList.size) {
                 yAxisLabelList.add((verticalStep * i).roundToInt().toString())
-                println("interval - ${(absMinY + verticalStep * i)}")
+//                println("interval - ${(absMinY + verticalStep * i)}")
             }
-
 
             val xItemSpacing = gridWidth / (maxPointsSize - 1)
             val yItemSpacing = gridHeight / (yAxisLabelList.size - 1)
-
 
             /**
              * Drawing Grid lines behind the graph on x and y axis
