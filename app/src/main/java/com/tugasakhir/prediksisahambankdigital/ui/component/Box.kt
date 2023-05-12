@@ -5,22 +5,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tugasakhir.prediksisahambankdigital.PerbandinganPrediksiItem
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
+import com.tugasakhir.prediksisahambankdigital.ui.theme.NumberBoxText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleBoxText
 import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun PerbandinganPrediksiBox(
     modifier: Modifier,
-    perbandinganPrediksiItem: PerbandinganPrediksiItem
+    perbandinganPrediksiItem: PerbandinganPrediksiItem,
+    perbandinganPrediksiLainItem: PerbandinganPrediksiItem? = null
 ) {
     //val context = LocalContext.current
 
@@ -32,27 +32,12 @@ fun PerbandinganPrediksiBox(
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                perbandinganPrediksiItem.judul!!,
-                modifier = Modifier
-                    .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 10.dp),
-                color = DarkBlue1,
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp,
-                lineHeight = 23.sp
-            )
+            TitleBoxText(modifier = Modifier, judul = perbandinganPrediksiItem.judul!!)
 
-            Row(Modifier.weight(1f, false)) {
-                Text(
-                    perbandinganPrediksiItem.hargaPenutupan.toString(),
-                    modifier = Modifier
-                        .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 15.dp),
-                    color = DarkBlue1,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 23.sp
-                )
+            Row(Modifier.weight(0.5f, false)) {
+                NumberBoxText(modifier = Modifier, judul = perbandinganPrediksiItem.hargaPenutupan)
 
-                Spacer(Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
 
                 Image(
                     painter = painterResource(perbandinganPrediksiItem.gambarKeterangan),
@@ -62,6 +47,24 @@ fun PerbandinganPrediksiBox(
                         .padding(end = 15.dp),
                 )
             }
+
+            perbandinganPrediksiLainItem?.let {
+                TitleBoxText(modifier = Modifier, judul = "Prediksi lainnya")
+
+                Row(Modifier.weight(1f, false)) {
+                    NumberBoxText(modifier = Modifier, judul = it.hargaPenutupan, 15.sp)
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Image(
+                        painter = painterResource(perbandinganPrediksiItem.gambarKeterangan),
+                        contentDescription = "Up",
+                        modifier = Modifier
+                            .size(38.dp)
+                            .padding(end = 15.dp),
+                    )
+                }
+            }
         }
     }
 }
@@ -70,8 +73,6 @@ fun PerbandinganPrediksiBox(
 fun PerbandinganPrediksiBoxShimmer(
     modifier: Modifier
 ) {
-    //val context = LocalContext.current
-
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp)

@@ -3,20 +3,19 @@ package com.tugasakhir.prediksisahambankdigital.ui.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.tugasakhir.prediksisahambankdigital.R
+import coil.compose.rememberAsyncImagePainter
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 
 @Composable
@@ -32,30 +31,26 @@ fun TentangPengembangScreen(
             Column(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.height(50.dp))
 
-                Text(
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    text = "Nama Pengembang",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                SubTitleText(modifier = Modifier, judul = "Paulina Graciela Harmanto")
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Image(
-                    painterResource(id = R.drawable.ic_launcher_foreground),
+                    painter = rememberAsyncImagePainter("https://tugas-akhir.portfoliobypgh.my.id/profile/profile_photo.png"),
                     contentDescription = null,
                     modifier = Modifier
+                        .clip(CircleShape)
                         .padding(start = 15.dp, end = 15.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .size(130.dp),
                     Alignment.Center
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    text = "Profil pengembang ...",
-                    fontSize = 15.sp
+                DescriptionText(
+                    modifier = Modifier,
+                    deskripsi = "Seorang wanita yang memiliki ketertarikan untuk mendalami pemrograman Android. Ia berhasil mendapatkan sertifikat Associate Android Developer pada November 2022, dan ingin terus berkembang lebih lagi. Sebagai Tugas Akhirnya, ia membuat aplikasi Android dinamakan \"PREDIK\" dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto."
                 )
             }
         }

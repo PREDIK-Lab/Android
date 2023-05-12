@@ -12,10 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import kotlinx.coroutines.delay
 
@@ -42,8 +44,9 @@ fun SplashScreen(modifier: Modifier = Modifier, onTimeOut: () -> Unit) {
                 }
 
                 Image(
-                    painterResource(id = R.drawable.ic_launcher_foreground),
-                    contentDescription = null
+                    painter = rememberAsyncImagePainter("https://tugas-akhir.portfoliobypgh.my.id/logo/white_logo.png"),
+                    contentDescription = null,
+                    modifier = Modifier.size(250.dp)
                 )
             }
 
@@ -62,7 +65,12 @@ fun SplashScreenTextVersion(modifier: Modifier) {
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Column(modifier = modifier.padding(bottom = 120.dp)) {
-            Text(text = "v.1.0", color = Color.White, textAlign = TextAlign.Center)
+            Text(
+                text = BuildConfig.VERSION_NAME,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                style = TextStyle(letterSpacing = 0.5.sp)
+            )
         }
     }
 }
@@ -86,13 +94,15 @@ fun SplashScreenTextAddition(modifier: Modifier) {
             Text(
                 text = "Tugas Akhir oleh",
                 color = Color.White.copy(alpha = 0.5f),
-                fontSize = 13.sp
+                fontSize = 13.sp,
+                letterSpacing = 0.5.sp
             )
 
             Text(
                 text = "Paulina Graciela Harmanto",
                 color = Color.White,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.sp
             )
         }
     }

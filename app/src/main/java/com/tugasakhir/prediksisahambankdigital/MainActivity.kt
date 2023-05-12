@@ -5,8 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -182,7 +181,7 @@ private fun BottomNavigationBar(
                 },
                 icon = {
                     Icon(
-                        imageVector = Icons.Default.AccountCircle,
+                        imageVector = navItem.icon,
                         modifier = Modifier.size(40.dp),
                         contentDescription = null
                     )
@@ -190,7 +189,8 @@ private fun BottomNavigationBar(
                 label = {
                     Text(
                         text = navItem.label,
-                        fontWeight = if (currentRoute == navItem.route) FontWeight.Bold else FontWeight.Normal
+                        fontWeight = if (currentRoute == navItem.route) FontWeight.Bold else FontWeight.Normal,
+                        letterSpacing = 0.sp
                     )
                 },
                 alwaysShowLabel = true,

@@ -40,7 +40,7 @@ fun PrediksiSahamBankDigitalTheme(
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = AppFontTypography,
         shapes = Shapes,
         content = content
     )

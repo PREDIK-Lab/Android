@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,17 +16,45 @@ import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tugasakhir.prediksisahambankdigital.R
+import coil.compose.rememberAsyncImagePainter
+import com.tugasakhir.prediksisahambankdigital.BuildConfig
 import com.tugasakhir.prediksisahambankdigital.domain.model.DetailPrediksi
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
-import com.tugasakhir.prediksisahambankdigital.ui.theme.LightGrey1
-import com.tugasakhir.prediksisahambankdigital.ui.theme.LightGrey2
+import com.tugasakhir.prediksisahambankdigital.ui.theme.*
+import com.tugasakhir.prediksisahambankdigital.ui.util.parseDayMonthFormat
+import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
+import java.util.*
 
 typealias OnItemClick = (String) -> Unit
+
+@Composable
+fun InformasiAplikasiList(
+    modifier: Modifier,
+    list: List<String>,
+    onItemClick: OnItemClick
+) {
+    Card(
+        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Column {
+            (list).forEach {
+                InformasiAplikasiListItem(
+                    modifier = modifier,
+                    item = it,
+                    onItemClick = onItemClick
+                )
+
+                Divider(
+                    modifier = modifier.padding(start = 15.dp, end = 15.dp),
+                    color = LightGrey2
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun InformasiAplikasiList(
@@ -35,40 +62,38 @@ fun InformasiAplikasiList(
     list: Map<String, List<String>>,
     onItemClick: OnItemClick
 ) {
-    val listState = rememberLazyListState()
+//    val listState = rememberLazyListState()
 
-    LazyColumn(state = listState) {
-        items(items = list.toList()) {
-            Text(
-                it.first,
-                modifier = modifier
-                    .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
+//    LazyColumn(state = listState) {
+//        items(items = list.toList()) {
+//
+//        }
+//    }
 
-            Card(
-                modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                shape = RoundedCornerShape(20.dp)
-            ) {
-                Column {
-                    (it.second).forEach {
-                        InformasiAplikasiListItem(
-                            modifier = modifier,
-                            item = it,
-                            onItemClick = onItemClick
-                        )
+    (list.toList()).forEach {
+        ListTitleText(modifier = modifier, judul = it.first)
 
-                        Divider(
-                            modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                            color = LightGrey2
-                        )
-                    }
+        Card(
+            modifier = modifier.padding(start = 15.dp, end = 15.dp),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Column {
+                (it.second).forEach {
+                    InformasiAplikasiListItem(
+                        modifier = modifier,
+                        item = it,
+                        onItemClick = onItemClick
+                    )
+
+                    Divider(
+                        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+                        color = LightGrey2
+                    )
                 }
             }
-
-            Spacer(modifier = Modifier.height(50.dp))
         }
+
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -79,23 +104,58 @@ private fun InformasiAplikasiListItem(
     onItemClick: OnItemClick
 ) {
     Row(modifier = modifier.clickable { onItemClick(item) }) {
-        Text(
-            item,
-            modifier = modifier
-                .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-            color = DarkBlue1,
-        )
+        ListItemClickableText(modifier = modifier, judul = item)
 
         Spacer(Modifier.weight(1f))
 
-        Icon(
-            imageVector = Icons.Filled.KeyboardArrowRight,
-            tint = LightGrey1,
-            modifier = modifier
-                .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-            contentDescription = item
-        )
+        if (item.lowercase(Locale.getDefault()) == "versi saat ini") {
+            ListItemText(modifier = modifier, judul = BuildConfig.VERSION_NAME)
+        } else {
+            Icon(
+                imageVector = Icons.Filled.KeyboardArrowRight,
+                tint = LightGrey1,
+                modifier = modifier
+                    .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
+                contentDescription = item
+            )
+        }
     }
+}
+
+@Composable
+fun PanduanPenggunaanList(
+    modifier: Modifier,
+    list: Map<String, String>
+) {
+    val listState = rememberLazyListState()
+
+//    LazyColumn(state = listState) {
+    list.toList().forEachIndexed { index, it ->
+        Card(
+            modifier = modifier.padding(start = 15.dp, end = 15.dp),
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Column(modifier = Modifier.padding(top = 15.dp, bottom = 15.dp)) {
+                Image(
+                    painter = rememberAsyncImagePainter(it.first),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(start = 15.dp, end = 15.dp)
+                        .fillMaxWidth()
+                        .size(150.dp),
+                    Alignment.Center
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                DescriptionText(modifier = modifier, deskripsi = it.second)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+    }
+
+    Spacer(modifier = Modifier.height(40.dp))
 }
 
 @Composable
@@ -107,25 +167,29 @@ fun PrediksiSahamList(
     val listState = rememberLazyListState()
 
     LazyColumn(state = listState) {
-        itemsIndexed(list) { index, item ->
+        itemsIndexed(list) { _, item ->
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        item.tanggal,
+                        text = parseDayMonthFormat(item.tanggal),
                         modifier = modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.W700
+                        fontWeight = FontWeight.W500,
+                        letterSpacing = 0.sp
                     )
 
                     Spacer(Modifier.weight(1f))
 
+                    //TitleBoxText(modifier = modifier, judul = item.prediksiHargaPenutupan.toString())
+
                     Text(
-                        item.prediksiHargaPenutupan.toString(),
+                        text = roundDecimal(item.prediksiHargaPenutupan).toString(),
                         modifier = modifier
                             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
                         fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.sp
                     )
 
                     Spacer(Modifier.weight(1f))

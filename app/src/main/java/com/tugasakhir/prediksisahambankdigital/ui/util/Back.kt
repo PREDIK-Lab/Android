@@ -11,7 +11,9 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * Memanggil TopAppBar untuk indikasi kembali
@@ -22,7 +24,10 @@ fun PageTopAppBar(onBack: () -> Unit, title: String = "") {
         modifier = Modifier.height(60.dp),
         title = {
             Text(
-                text = title
+                text = title,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Normal,
+                letterSpacing = 0.sp
             )
         },
         navigationIcon = {

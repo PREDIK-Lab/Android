@@ -2,25 +2,25 @@ package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.tugasakhir.prediksisahambankdigital.R
+import coil.compose.rememberAsyncImagePainter
 import com.tugasakhir.prediksisahambankdigital.ui.component.InformasiAplikasiList
 import com.tugasakhir.prediksisahambankdigital.ui.component.OnItemClick
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 
 private val informasiList =
     mapOf(
-        "Lainnya" to listOf("Versi Saat ini", "Tentang Pengembang")
+        "Lainnya" to listOf("Versi Saat Ini", "Tentang Pengembang")
     )
 
 @Composable
@@ -38,34 +38,29 @@ fun TentangAplikasiScreen(
         topBar = { PageTopAppBar(navigateBack, "Tentang Aplikasi") }
     ) {
         it
-        Surface(modifier = Modifier) {
+        Surface(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.height(50.dp))
 
-                Text(
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    text = "Aplikasi Prediksi ...",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                SubTitleText(modifier = Modifier, judul = "PREDIK")
 
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Image(
-                    painterResource(id = R.drawable.ic_launcher_foreground),
+                    painter = rememberAsyncImagePainter("https://tugas-akhir.portfoliobypgh.my.id/logo/color_logo.png"),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .size(130.dp),
                     Alignment.Center
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    text = "Aplikasi prediksi ...",
-                    fontSize = 15.sp
+                DescriptionText(
+                    modifier = Modifier,
+                    deskripsi = "PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan. Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia."
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
@@ -75,6 +70,8 @@ fun TentangAplikasiScreen(
                     list = informasiList,
                     onItemClick = onItemClick
                 )
+
+                Spacer(modifier = Modifier.height(50.dp))
             }
         }
     }

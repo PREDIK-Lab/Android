@@ -16,31 +16,31 @@ import androidx.navigation.compose.rememberNavController
 import com.tugasakhir.prediksisahambankdigital.ui.component.InformasiAplikasiList
 import com.tugasakhir.prediksisahambankdigital.ui.component.OnItemClick
 
-private val informasiList =
-    mapOf(
-        "Umum" to listOf("Panduan Penggunaan", "Tentang Aplikasi"),
-        "Hubungi Kami!" to listOf("Kontak")
-    )
-
 //private val informasiList =
-//    listOf("Umum", "Hubungi Kami!")
-//
-//private val informasiMenuList =
-//    listOf(listOf("Panduan Penggunaan", "Tentang Aplikasi"), listOf("Kontak"))
+//    mapOf(
+//        "Umum" to listOf("Panduan Penggunaan", "Tentang Aplikasi"),
+//        "Hubungi Kami!" to listOf("Kontak")
+//    )
+
+private val informasiList = listOf("Panduan Penggunaan", "Tentang Aplikasi", "Kontak")
 
 @Composable
 fun InformasiScreen(
     modifier: Modifier, navController: NavHostController = rememberNavController()
 ) {
     val onItemClick: OnItemClick = {
-        if (it == "Panduan Penggunaan") {
-            navController.navigate(ScreenRoute.PanduanPenggunaan.createRoute())
+        when (it) {
+            "Panduan Penggunaan" -> {
+                navController.navigate(ScreenRoute.PanduanPenggunaan.createRoute())
 
-            // context.startActivity(Intent(context, PanduanPenggunaanActivity::class.java))
-        } else if (it == "Tentang Aplikasi") {
-            navController.navigate(ScreenRoute.TentangAplikasi.createRoute())
-        } else if (it == "Kontak") {
-            navController.navigate(ScreenRoute.Kontak.createRoute())
+                // context.startActivity(Intent(context, PanduanPenggunaanActivity::class.java))
+            }
+            "Tentang Aplikasi" -> {
+                navController.navigate(ScreenRoute.TentangAplikasi.createRoute())
+            }
+            "Kontak" -> {
+                navController.navigate(ScreenRoute.Kontak.createRoute())
+            }
         }
     }
 

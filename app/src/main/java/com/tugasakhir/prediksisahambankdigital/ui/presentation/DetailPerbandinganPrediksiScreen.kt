@@ -1,6 +1,5 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -12,9 +11,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -26,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -44,8 +41,13 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
+import com.tugasakhir.prediksisahambankdigital.ui.util.parseDayMonthYearFormat
+import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
 import com.tugasakhir.prediksisahambankdigital.viewmodel.DetailPerbandinganPrediksiViewModel
 import com.tugasakhir.prediksisahambankdigital.viewmodel.DetailPerbandinganPrediksiViewModelFactory
 import com.valentinilk.shimmer.shimmer
@@ -75,10 +77,10 @@ fun DetailPerbandinganPrediksiScreen(
     val key by rememberSaveable { mutableStateOf(kodeSaham) }
 
     // Up icon when expanded and down icon when collapsed
-    val icon = if (isDropdownExpanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
+//    val icon = if (isDropdownExpanded)
+//        Icons.Filled.KeyboardArrowUp
+//    else
+//        Icons.Filled.KeyboardArrowDown
 
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
     var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
@@ -95,14 +97,14 @@ fun DetailPerbandinganPrediksiScreen(
 //            emptyList()
 //        )
 //    }
-    val rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var prediksiGRUList: List<DetailPrediksi>? by rememberSaveable { mutableStateOf(emptyList()) }
 //    var perbandinganPrediksiGRUList: List<PerbandinganPrediksiItem>? by rememberSaveable {
 //        mutableStateOf(
 //            emptyList()
 //        )
 //    }
-    val rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var informasiSaham: Informasi by rememberSaveable {
         mutableStateOf(
             Informasi(
@@ -118,6 +120,7 @@ fun DetailPerbandinganPrediksiScreen(
     }
 
     var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
+    var isError: Boolean? by rememberSaveable { mutableStateOf(null) }
 
     val opsi = mapOf(
         "15D" to 15,
@@ -147,22 +150,27 @@ fun DetailPerbandinganPrediksiScreen(
 
     detailPerbandinganPrediksiViewModel.setKodeSaham(key)
 
-    if(isOnlinePage) {
+    if (isOnlinePage) {
         LaunchedEffect(key1 = key) {
             detailPerbandinganPrediksiViewModel.getDetailPerbandinganPrediksi { prediksi, grafik, informasi ->
                 prediksi.value.let {
                     when (it) {
                         is Resource.Loading -> {
                             isLoading = true
+                            isError = false
                         }
                         is Resource.Success -> {
                             isLoading = false
+                            isError = false
                             hargaSahamSaatIni = it.data!!.hargaPenutupanSaatIni
-                            prediksiLSTMList = it.data!!.prediksiLSTM
+                            prediksiLSTMList = it.data.prediksiLSTM
                             prediksiGRUList = it.data.prediksiGRU
+                            rmseLSTM = it.data.rmseLSTM
+                            rmseGRU = it.data.rmseGRU
                         }
                         is Resource.Error -> {
                             isLoading = false
+                            isError = true
                         }
                     }
                 }
@@ -171,16 +179,21 @@ fun DetailPerbandinganPrediksiScreen(
                     when (it) {
                         is Resource.Loading -> {
                             isLoading = true
+                            isError = false
                         }
                         is Resource.Success -> {
                             isLoading = false
+                            isError = false
                             ukuran = it.data?.size
                             grafikSahamList = it.data
                             grafikSahamListRaw = it.data
 
-                            Log.d("Graphhhh", it.data.toString())
-
-                            val tanggal = it.data!!.map { it.tanggal }.toTypedArray().toList()
+                            val tanggal =
+                                it.data!!.map { parseDayMonthYearFormat(it.tanggal) }.toTypedArray()
+                                    .toList()
+                            val hargaPenutupan =
+                                grafikSahamList!!.map { it.hargaPenutupan }
+                                    .toTypedArray().toList()
 
                             tanggalList = tanggal.map { list ->
                                 GraphData.String(list)
@@ -188,13 +201,12 @@ fun DetailPerbandinganPrediksiScreen(
                             tanggalListRaw = tanggal.map { list ->
                                 GraphData.String(list)
                             }
-                            hargaPenutupanList =
-                                grafikSahamList!!.map { it.hargaPenutupan }.toTypedArray().toList()
-                            hargaPenutupanListRaw =
-                                grafikSahamList!!.map { it.hargaPenutupan }.toTypedArray().toList()
+                            hargaPenutupanList = hargaPenutupan
+                            hargaPenutupanListRaw = hargaPenutupan
                         }
                         is Resource.Error -> {
                             isLoading = false
+                            isError = true
                         }
                     }
                 }
@@ -203,9 +215,11 @@ fun DetailPerbandinganPrediksiScreen(
                     when (it) {
                         is Resource.Loading -> {
                             isLoading = true
+                            isError = false
                         }
                         is Resource.Success -> {
                             isLoading = false
+                            isError = false
                             informasiSaham = Informasi(
                                 it.data!!.tentangPerusahaan,
                                 it.data.sektor,
@@ -218,6 +232,7 @@ fun DetailPerbandinganPrediksiScreen(
                         }
                         is Resource.Error -> {
                             isLoading = false
+                            isError = true
                         }
                     }
                 }
@@ -245,19 +260,14 @@ fun DetailPerbandinganPrediksiScreen(
 //    }
 
         Scaffold(
-            topBar = { PageTopAppBar(navigateBack) }
+            topBar = { PageTopAppBar(navigateBack, key) }
         ) {
             it
             Surface(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Spacer(modifier = Modifier.height(50.dp))
 
-                    Text(
-                        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                        text = "Prediksi Saham $kodeSaham",
-                        fontSize = 30.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
+                    TitleText(modifier = Modifier, judul = "Prediksi Saham $kodeSaham")
 
                     Spacer(modifier = Modifier.height(50.dp))
 
@@ -267,17 +277,19 @@ fun DetailPerbandinganPrediksiScreen(
                             .padding(start = 15.dp, end = 15.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        if (isLoading == false) {
+                        if (isLoading == false && isError == false) {
                             Text(
                                 text = "Harga Saham Saat Ini",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.ExtraBold
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.sp
                             )
 
                             Text(
                                 text = hargaSahamSaatIni.toString(),
                                 fontSize = 20.sp,
-                                fontWeight = FontWeight.ExtraBold
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 0.sp
                             )
                         } else {
                             Box(
@@ -311,13 +323,15 @@ fun DetailPerbandinganPrediksiScreen(
                         Text(
                             text = "Prediksi 1",
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.sp
                         )
 
                         Text(
                             text = "Prediksi 2",
                             fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.ExtraBold,
+                            letterSpacing = 0.sp
                         )
                     }
 
@@ -339,7 +353,7 @@ fun DetailPerbandinganPrediksiScreen(
                             shape = RoundedCornerShape(20.dp)
                         ) {
                             PrediksiSahamList(
-                                hargaSahamSaatIni = hargaSahamSaatIni,
+                                hargaSahamSaatIni = roundDecimal(hargaSahamSaatIni),
                                 list = if (rmseLSTM!! <= rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
                             )
                         }
@@ -353,7 +367,7 @@ fun DetailPerbandinganPrediksiScreen(
                             shape = RoundedCornerShape(20.dp)
                         ) {
                             PrediksiSahamList(
-                                hargaSahamSaatIni = hargaSahamSaatIni,
+                                hargaSahamSaatIni = roundDecimal(hargaSahamSaatIni),
                                 list = if (rmseLSTM!! > rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
                             )
                         }
@@ -364,7 +378,7 @@ fun DetailPerbandinganPrediksiScreen(
                     /**
                      * Grafik Saham
                      */
-                    if (isLoading == false) {
+                    if (isLoading == false && isError == false) {
                         DetailPerbandinganPrediksiGrafikSaham(
                             Modifier,
                             tanggalList!!,
@@ -407,8 +421,8 @@ fun DetailPerbandinganPrediksiScreen(
                     /**
                      * Informasi Saham
                      */
-                    if (isLoading == false) {
-                        val kodeSahamList = sahamList!!.map { it.kode }.toTypedArray().toList()
+                    if (isLoading == false && isError == false) {
+                        val kodeSahamList = sahamList.map { it.kode }.toTypedArray().toList()
 
                         DetailPerbandinganPrediksiTentangSaham(
                             Modifier,
@@ -421,8 +435,7 @@ fun DetailPerbandinganPrediksiScreen(
                 }
             }
         }
-    }
-    else {
+    } else {
         ErrorScreen(Modifier)
     }
 }
@@ -437,12 +450,7 @@ fun DetailPerbandinganPrediksiGrafikSaham(
     clickedPoin: MutableState<Pair<Any, Any>?>,
     clickedOffset: MutableState<Offset?>
 ) {
-    Text(
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Grafik Saham",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
+    SubTitleText(modifier = modifier, judul = "Grafik Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
@@ -479,16 +487,26 @@ fun DetailPerbandinganPrediksiGrafikSaham(
     /**
      * Menampilkan nilai dari poin yang diklik (x: tanggal, y: harga penutupan)
      */
-    clickedPoin.value?.let {
-        Row {
-            Text(text = "Value: ", color = Color.Gray)
-            Text(
-                text = "${it.first}, ${it.second}",
-                color = GraphAccent2,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+    Card(
+        modifier = Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(15.dp),
+            text = clickedPoin.value?.let { "(x, y): (${it.first}, ${it.second})" }
+                ?: "Klik poin pada grafik untuk melihat nilai (x, y).",
+            fontSize = 15.sp,
+            lineHeight = 23.sp,
+            letterSpacing = 0.sp,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold
+        )
     }
+
+    Spacer(modifier = Modifier.height(5.dp))
 
     /**
      * Menampilkan grafik saham
@@ -511,14 +529,9 @@ fun DetailPerbandinganPrediksiTentangSaham(
     sahamItem: SahamItem,
     informasiSaham: Informasi
 ) {
-    Text(
-        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Tentang Saham",
-        fontSize = 30.sp,
-        fontWeight = FontWeight.Bold
-    )
+    TitleText(modifier = Modifier, judul = "Tentang Saham")
 
-    Spacer(modifier = Modifier.height(30.dp))
+    Spacer(modifier = Modifier.height(50.dp))
 
     Column {
         Row(
@@ -538,19 +551,14 @@ fun DetailPerbandinganPrediksiTentangSaham(
             Text(
                 text = sahamItem.nama,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.sp
             )
         }
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        Text(
-            text = informasiSaham.tentangPerusahaan,
-            modifier = Modifier
-                .padding(start = 15.dp, end = 15.dp),
-            fontSize = 15.sp,
-            lineHeight = 28.sp
-        )
+        DescriptionText(modifier = Modifier, deskripsi = informasiSaham.tentangPerusahaan)
 
         Spacer(modifier = Modifier.height(30.dp))
 
@@ -561,7 +569,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painterResource(id = R.drawable.ic_launcher_foreground),
+                painterResource(id = R.drawable.baseline_category_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -572,7 +580,8 @@ fun DetailPerbandinganPrediksiTentangSaham(
             Text(
                 text = informasiSaham.sektor + " (" + informasiSaham.industri + ")",
                 fontSize = 15.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                letterSpacing = 0.sp
             )
         }
 
@@ -585,7 +594,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painterResource(id = R.drawable.ic_launcher_foreground),
+                painterResource(id = R.drawable.baseline_location_on_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -596,7 +605,8 @@ fun DetailPerbandinganPrediksiTentangSaham(
             Text(
                 text = informasiSaham.alamat,
                 fontSize = 15.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                letterSpacing = 0.sp
             )
         }
 
@@ -609,7 +619,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painterResource(id = R.drawable.ic_launcher_foreground),
+                painterResource(id = R.drawable.baseline_person_24),
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
@@ -620,7 +630,8 @@ fun DetailPerbandinganPrediksiTentangSaham(
             Text(
                 text = "${informasiSaham.jumlahPegawai} orang",
                 fontSize = 15.sp,
-                lineHeight = 28.sp
+                lineHeight = 28.sp,
+                letterSpacing = 0.sp
             )
         }
 
@@ -630,12 +641,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
 
 @Composable
 fun DetailPerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
-    Text(
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Grafik Saham",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
+    TitleText(modifier = modifier, judul = "Grafik Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
@@ -651,12 +657,7 @@ fun DetailPerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
 
 @Composable
 fun DetailPerbandinganPrediksiTentangSahamShimmer(modifier: Modifier) {
-    Text(
-        modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Tentang Saham",
-        fontSize = 30.sp,
-        fontWeight = FontWeight.Bold
-    )
+    TitleText(modifier = modifier, judul = "Tentang Saham")
 
     Spacer(modifier = Modifier.height(30.dp))
 

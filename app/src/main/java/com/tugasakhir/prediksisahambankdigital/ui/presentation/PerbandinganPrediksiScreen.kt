@@ -41,12 +41,15 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
+import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
+import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModel
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModelFactory
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
-import kotlin.math.roundToInt
 
 @Composable
 fun PerbandinganPrediksiScreen(
@@ -80,12 +83,14 @@ fun PerbandinganPrediksiScreen(
 
     var hargaPenutupanSaatIni: Float? by rememberSaveable { mutableStateOf(0.0F) }
     val hargaPenutupanSebelumnya: Float? by rememberSaveable { mutableStateOf(0.0F) }
-    var hargaPenutupanBesok: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var hargaPenutupanBesok1: Float? by rememberSaveable { mutableStateOf(0.0F) }
+    var hargaPenutupanBesok2: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
     var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
     var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
+    var isError: Boolean? by rememberSaveable { mutableStateOf(null) }
 
     val isOnline = checkConnectivityStatus()
     var isOnlinePage by rememberSaveable { mutableStateOf(true) }
@@ -103,22 +108,29 @@ fun PerbandinganPrediksiScreen(
     if (isOnlinePage) {
         LaunchedEffect(key1 = key) {
             isLoading = true
+            isError = false
 
             perbandinganPrediksiViewModel.getPerbandinganPrediksi { prediksi, grafik ->
                 prediksi.value.let {
                     when (it) {
                         is Resource.Loading -> {
                             isLoading = true
+                            isError = false
                         }
                         is Resource.Success -> {
                             isLoading = false
+                            isError = false
                             rmseLSTM = it.data?.rmseLSTM
                             rmseGRU = it.data?.rmseGRU
                             hargaPenutupanSaatIni = it.data?.hargaPenutupanSaatIni
-                            hargaPenutupanBesok = it.data!!.prediksiLSTM[0].prediksiHargaPenutupan
+                            hargaPenutupanBesok1 =
+                                if (it.data!!.rmseLSTM <= it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
+                            hargaPenutupanBesok2 =
+                                if (it.data.rmseLSTM >= it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
                         }
                         is Resource.Error -> {
                             isLoading = false
+                            isError = true
                         }
                     }
                 }
@@ -127,15 +139,17 @@ fun PerbandinganPrediksiScreen(
                     when (it) {
                         is Resource.Loading -> {
                             isLoading = true
+                            isError = false
                         }
                         is Resource.Success -> {
                             isLoading = false
+                            isError = false
                             ukuran = it.data?.size
                             grafikSahamList = it.data
                         }
                         is Resource.Error -> {
                             isLoading = false
-
+                            isError = true
                         }
                     }
                 }
@@ -146,12 +160,7 @@ fun PerbandinganPrediksiScreen(
             Column {
                 Spacer(modifier = modifier.height(50.dp))
 
-                Text(
-                    modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                    text = "Perbandingan Prediksi",
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
+                TitleText(modifier = modifier, judul = "Perbandingan Prediksi")
 
                 Spacer(modifier = modifier.height(50.dp))
 
@@ -206,21 +215,27 @@ fun PerbandinganPrediksiScreen(
 
                 Spacer(modifier = modifier.height(30.dp))
 
-                Button(
-                    onClick = {
-                        perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
+                ButtonText(modifier = Modifier, onClick = {
+                    perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
 
-                        key = dropdownSelectedKodeSaham
-                    },
-                    shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 15.dp, end = 15.dp)
-                        .height(50.dp),
-                    colors = ButtonDefaults.buttonColors(backgroundColor = DarkBlue1)
-                ) {
-                    Text(text = "Prediksi", color = Color.White, fontWeight = FontWeight.Bold)
-                }
+                    key = dropdownSelectedKodeSaham
+                }, judul = "Prediksi")
+
+//                Button(
+//                    onClick = {
+//                        perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
+//
+//                        key = dropdownSelectedKodeSaham
+//                    },
+//                    shape = RoundedCornerShape(20.dp),
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(start = 15.dp, end = 15.dp)
+//                        .height(50.dp),
+//                    colors = ButtonDefaults.buttonColors(backgroundColor = DarkBlue1)
+//                ) {
+//                    Text(text = "Prediksi", color = Color.White, fontWeight = FontWeight.Bold)
+//                }
 
                 Spacer(modifier = modifier.height(50.dp))
 
@@ -228,50 +243,56 @@ fun PerbandinganPrediksiScreen(
                     modifier = Modifier.padding(start = 15.dp, end = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    if (isLoading == false) {
+                    if (isLoading == false && isError == false) {
                         PerbandinganPrediksiBox(
                             modifier
                                 .weight(1f)
-                                .height(150.dp),
+                                .height(310.dp),
                             PerbandinganPrediksiItem(
                                 "Harga penutupan saham hari ini",
-                                hargaPenutupanSaatIni!!.roundToInt().toFloat() / 10000,
-                                if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.up_arrow else R.drawable.down_arrow
+                                roundDecimal(hargaPenutupanSaatIni!!),
+                                if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
                             )
                         )
                     } else {
                         PerbandinganPrediksiBoxShimmer(
                             modifier
                                 .weight(1f)
-                                .height(150.dp)
+                                .height(310.dp)
                         )
                     }
 
                     Spacer(Modifier.weight(0.1f))
 
-                    if (isLoading == false) {
+                    if (isLoading == false && isError == false) {
+
                         PerbandinganPrediksiBox(
                             modifier
                                 .weight(1f)
-                                .height(150.dp),
+                                .height(310.dp),
                             PerbandinganPrediksiItem(
-                                "Prediksi harga penutupan saham besok",
-                                hargaPenutupanBesok!!.roundToInt().toFloat() / 10000,
-                                if (hargaPenutupanBesok!! >= hargaPenutupanSaatIni!!) R.drawable.up_arrow else R.drawable.down_arrow
+                                "Prediksi harga penutupan berikutnya",
+                                roundDecimal(hargaPenutupanBesok1!!),
+                                if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                            ),
+                            PerbandinganPrediksiItem(
+                                "Prediksi harga penutupan berikutnya",
+                                roundDecimal(hargaPenutupanBesok2!!),
+                                if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
                             )
                         )
                     } else {
                         PerbandinganPrediksiBoxShimmer(
                             modifier
                                 .weight(1f)
-                                .height(150.dp)
+                                .height(310.dp)
                         )
                     }
                 }
 
                 Spacer(modifier = modifier.height(15.dp))
 
-                if (isLoading == false) {
+                if (isLoading == false && isError == false) {
                     ClickableText(
                         modifier = Modifier.padding(start = 15.dp, end = 15.dp),
                         text = AnnotatedString("Selengkapnya..."),
@@ -279,6 +300,7 @@ fun PerbandinganPrediksiScreen(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = DarkBlue1,
+                            letterSpacing = 0.sp
                         ),
                         onClick = {
                             navigateToDetailPerbandinganPrediksi(key)
@@ -296,12 +318,6 @@ fun PerbandinganPrediksiScreen(
                 }
 
                 Spacer(modifier = modifier.height(50.dp))
-
-                if (isLoading == false) {
-                    PerbandinganPrediksiGrafikSaham(modifier, grafikSahamList!!)
-                } else {
-                    PerbandinganPrediksiGrafikSahamShimmer(modifier)
-                }
             }
         }
     } else {
@@ -311,12 +327,7 @@ fun PerbandinganPrediksiScreen(
 
 @Composable
 fun PerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: List<Grafik>) {
-    Text(
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Grafik Saham",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
+    SubTitleText(modifier = modifier, judul = "Grafik Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
@@ -339,12 +350,7 @@ fun PerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: List<Gr
 
 @Composable
 fun PerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
-    Text(
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        text = "Grafik Saham",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
+    SubTitleText(modifier = modifier, judul = "Grafik Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
