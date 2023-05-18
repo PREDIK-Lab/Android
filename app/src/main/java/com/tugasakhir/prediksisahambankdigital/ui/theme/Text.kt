@@ -51,6 +51,19 @@ fun TitleBoxText(modifier: Modifier, judul: String) {
 }
 
 @Composable
+fun DescriptionBoxText(modifier: Modifier, deskripsi: String) {
+    Text(
+        deskripsi,
+        modifier = modifier
+            .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 10.dp),
+        color = LightGrey1,
+        fontSize = 15.sp,
+        lineHeight = 15.sp,
+        letterSpacing = 0.sp
+    )
+}
+
+@Composable
 fun NumberBoxText(modifier: Modifier, judul: Number, fontSize: TextUnit = 23.sp) {
     Text(
         judul.toString(),

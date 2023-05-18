@@ -42,6 +42,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.LightGrey1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
@@ -333,6 +334,56 @@ fun DetailPerbandinganPrediksiScreen(
                             fontWeight = FontWeight.ExtraBold,
                             letterSpacing = 0.sp
                         )
+                    }
+
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    if (isLoading == false && isError == false) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Text(
+                                text = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
+                                fontSize = 15.sp,
+                                color = LightGrey1,
+                                letterSpacing = 0.sp
+                            )
+
+                            Text(
+                                text = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
+                                fontSize = 15.sp,
+                                color = LightGrey1,
+                                letterSpacing = 0.sp
+                            )
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .shimmer()
+                                    .background(Color.Gray)
+                                    .width(70.dp)
+                                    .height(20.dp)
+                                    .background(Color.Gray)
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .shimmer()
+                                    .background(Color.Gray)
+                                    .width(70.dp)
+                                    .height(20.dp)
+                                    .background(Color.Gray)
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(10.dp))

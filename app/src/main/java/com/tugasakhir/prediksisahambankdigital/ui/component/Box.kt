@@ -12,6 +12,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tugasakhir.prediksisahambankdigital.PerbandinganPrediksiItem
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionBoxText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.NumberBoxText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleBoxText
 import com.valentinilk.shimmer.shimmer
@@ -29,10 +30,14 @@ fun PerbandinganPrediksiBox(
         shape = RoundedCornerShape(20.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxHeight(),
+            //modifier = Modifier.fillMaxHeight(),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             TitleBoxText(modifier = Modifier, judul = perbandinganPrediksiItem.judul!!)
+
+            perbandinganPrediksiItem.deskripsi?.let {
+                DescriptionBoxText(modifier = Modifier, deskripsi = it)
+            }
 
             Row(Modifier.weight(0.5f, false)) {
                 NumberBoxText(modifier = Modifier, judul = perbandinganPrediksiItem.hargaPenutupan)
@@ -51,8 +56,12 @@ fun PerbandinganPrediksiBox(
             perbandinganPrediksiLainItem?.let {
                 TitleBoxText(modifier = Modifier, judul = "Prediksi lainnya")
 
+                it.deskripsi?.let { deskripsi ->
+                    DescriptionBoxText(modifier = Modifier, deskripsi = deskripsi)
+                }
+
                 Row(Modifier.weight(1f, false)) {
-                    NumberBoxText(modifier = Modifier, judul = it.hargaPenutupan, 15.sp)
+                    NumberBoxText(modifier = Modifier, judul = it.hargaPenutupan)
 
                     Spacer(modifier = Modifier.weight(1f))
 
@@ -60,7 +69,7 @@ fun PerbandinganPrediksiBox(
                         painter = painterResource(perbandinganPrediksiItem.gambarKeterangan),
                         contentDescription = "Up",
                         modifier = Modifier
-                            .size(38.dp)
+                            .size(50.dp)
                             .padding(end = 15.dp),
                     )
                 }

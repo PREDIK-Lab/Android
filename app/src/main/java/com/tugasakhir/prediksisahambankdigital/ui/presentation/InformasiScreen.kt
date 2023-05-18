@@ -3,18 +3,15 @@ package com.tugasakhir.prediksisahambankdigital.ui.presentation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.tugasakhir.prediksisahambankdigital.ui.component.InformasiAplikasiList
 import com.tugasakhir.prediksisahambankdigital.ui.component.OnItemClick
+import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 
 //private val informasiList =
 //    mapOf(
@@ -48,12 +45,7 @@ fun InformasiScreen(
         Column {
             Spacer(modifier = modifier.height(50.dp))
 
-            Text(
-                modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                text = "Informasi Aplikasi",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
+            TitleText(modifier = modifier, judul = "Informasi Aplikasi")
 
             Spacer(modifier = modifier.height(50.dp))
 

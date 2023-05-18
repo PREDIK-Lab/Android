@@ -40,8 +40,8 @@ import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
@@ -132,6 +132,7 @@ fun PerbandinganPrediksiScreen(
                             isLoading = false
                             isError = true
                         }
+                        else -> {}
                     }
                 }
 
@@ -151,6 +152,7 @@ fun PerbandinganPrediksiScreen(
                             isLoading = false
                             isError = true
                         }
+                        else -> {}
                     }
                 }
             }
@@ -241,24 +243,26 @@ fun PerbandinganPrediksiScreen(
 
                 Row(
                     modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
                     if (isLoading == false && isError == false) {
                         PerbandinganPrediksiBox(
                             modifier
                                 .weight(1f)
-                                .height(310.dp),
+                                .height(390.dp)
+                                .wrapContentHeight(),
                             PerbandinganPrediksiItem(
-                                "Harga penutupan saham hari ini",
-                                roundDecimal(hargaPenutupanSaatIni!!),
-                                if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
+                                judul = "Harga penutupan saham hari ini",
+                                hargaPenutupan = roundDecimal(hargaPenutupanSaatIni!!),
+                                gambarKeterangan = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
                             )
                         )
                     } else {
                         PerbandinganPrediksiBoxShimmer(
                             modifier
                                 .weight(1f)
-                                .height(310.dp)
+                                .height(390.dp)
+                                .wrapContentHeight()
                         )
                     }
 
@@ -269,28 +273,30 @@ fun PerbandinganPrediksiScreen(
                         PerbandinganPrediksiBox(
                             modifier
                                 .weight(1f)
-                                .height(310.dp),
+                                .height(390.dp)
+                                .wrapContentHeight(),
                             PerbandinganPrediksiItem(
-                                "Prediksi harga penutupan berikutnya",
-                                roundDecimal(hargaPenutupanBesok1!!),
-                                if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                judul = "Prediksi harga penutupan berikutnya",
+                                deskripsi = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
+                                hargaPenutupan = roundDecimal(hargaPenutupanBesok1!!),
+                                gambarKeterangan = if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
                             ),
                             PerbandinganPrediksiItem(
-                                "Prediksi harga penutupan berikutnya",
-                                roundDecimal(hargaPenutupanBesok2!!),
-                                if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                judul = "Prediksi harga penutupan berikutnya",
+                                deskripsi = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
+                                hargaPenutupan = roundDecimal(hargaPenutupanBesok2!!),
+                                gambarKeterangan = if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
                             )
                         )
                     } else {
                         PerbandinganPrediksiBoxShimmer(
                             modifier
                                 .weight(1f)
-                                .height(310.dp)
+                                .height(390.dp)
+                                .wrapContentHeight()
                         )
                     }
                 }
-
-                Spacer(modifier = modifier.height(15.dp))
 
                 if (isLoading == false && isError == false) {
                     ClickableText(
@@ -307,6 +313,8 @@ fun PerbandinganPrediksiScreen(
                         }
                     )
                 } else {
+                    Spacer(modifier = modifier.height(15.dp))
+
                     Box(
                         modifier = Modifier
                             .padding(start = 15.dp, end = 15.dp)
