@@ -15,6 +15,5 @@ Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan perangkat ker
 | :-----------: |:-------------:| :-----:|
 | Platform      | Android Studio | Dolphin |
 | Library dasar      | Jetpack Compose | ... |
-| col 2 is      | centered      |   $12 |
 
 2. Ketentuan perangkat keras dan lunak
