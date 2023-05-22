@@ -56,7 +56,7 @@ fun DescriptionBoxText(modifier: Modifier, deskripsi: String) {
         deskripsi,
         modifier = modifier
             .padding(start = 15.dp, end = 15.dp, top = 15.dp, bottom = 10.dp),
-        color = LightGrey1,
+        color = DarkGrey1,
         fontSize = 15.sp,
         lineHeight = 15.sp,
         letterSpacing = 0.sp

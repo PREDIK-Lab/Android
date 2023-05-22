@@ -41,10 +41,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.LightGrey1
-import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.*
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.parseDayMonthYearFormat
@@ -348,14 +345,14 @@ fun DetailPerbandinganPrediksiScreen(
                             Text(
                                 text = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
                                 fontSize = 15.sp,
-                                color = LightGrey1,
+                                color = DarkGrey1,
                                 letterSpacing = 0.sp
                             )
 
                             Text(
                                 text = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
                                 fontSize = 15.sp,
-                                color = LightGrey1,
+                                color = DarkGrey1,
                                 letterSpacing = 0.sp
                             )
                         }
