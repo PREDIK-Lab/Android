@@ -5,5 +5,5 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import kotlinx.coroutines.flow.Flow
 
 interface InformasiUseCase {
-    fun getInformasi(kodeSaham: String): Flow<Resource<Informasi>>
+    suspend fun getInformasi(kodeSaham: String): Flow<Resource<Informasi>>
 }

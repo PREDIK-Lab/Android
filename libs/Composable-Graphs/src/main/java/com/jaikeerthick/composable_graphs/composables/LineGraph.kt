@@ -1,7 +1,6 @@
 package com.jaikeerthick.composable_graphs.composables
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,14 +38,14 @@ fun LineGraph(
 //    val xAxisData = if (index > 0) xAxisDataRaw.takeLast(index) else xAxisDataRaw
 //    val yAxisData = if (index > 0) yAxisDataRaw.takeLast(index) else yAxisDataRaw
 
-    Log.d("dmm", index.toString())
+    //Log.d("Indeks grafik", index.toString())
 
     val yAxisPadding: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
     val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
     val offsetList = rememberSaveable { mutableListOf<Offset>() }
     val isPointClicked = rememberSaveable { mutableStateOf(false) }
-    val clickedPoint: MutableState<Offset?> = clickedOffset
+    val clickedPoint: MutableState<Offset?> = clickedOffset //remember { mutableStateOf(null) }
 
     Column(
         modifier = Modifier
@@ -84,7 +84,7 @@ fun LineGraph(
 
                             val distance = sqrt(
                                 (p1.x - p2.x).pow(2) + (p1.y - p2.y).pow(2)
-                            ) + 1
+                            ) //+ 1
                             val pointRadius = 15.dp.toPx()
 
                             distance <= pointRadius

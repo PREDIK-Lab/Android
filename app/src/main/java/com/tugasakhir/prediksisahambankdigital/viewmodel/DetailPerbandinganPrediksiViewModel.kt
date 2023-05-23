@@ -2,7 +2,6 @@ package com.tugasakhir.prediksisahambankdigital.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
@@ -37,7 +36,7 @@ class DetailPerbandinganPrediksiViewModel(
     val immutableInformasi: StateFlow<Resource<Informasi>>
         get() = mutableInformasi.asStateFlow()
 
-    val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
+    //val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
 
     fun setKodeSaham(kodeSaham: String) {
         mutableKodeSaham.value = kodeSaham

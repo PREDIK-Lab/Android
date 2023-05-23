@@ -29,13 +29,13 @@ class PerbandinganPrediksiViewModel(
     val immutableGrafik: StateFlow<Resource<List<Grafik>>>
         get() = mutableGrafik.asStateFlow()
 
-    val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
+    //val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
 
     fun setKodeSaham(kodeSaham: String) {
         mutableKodeSaham.value = kodeSaham
     }
 
-    fun getPerbandinganPrediksi(result: (prediksi: StateFlow<Resource<Prediksi>>, grafik: StateFlow<Resource<List<Grafik>>>) -> Unit) {
+    fun getPerbandinganPrediksi(result: (prediksi: StateFlow<Resource<Prediksi>>/*, grafik: StateFlow<Resource<List<Grafik>>>*/) -> Unit) {
         viewModelScope.launch {
             val callPrediksi = async { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
             val callGrafik = async { grafikUseCase.getGrafik(mutableKodeSaham.value) }
@@ -51,18 +51,18 @@ class PerbandinganPrediksiViewModel(
                 }
             }
 
-            callGrafik.await().distinctUntilChanged().filter {
-                it !== Resource.Loading("")
-            }.collectLatest {
-                try {
-                    mutableGrafik.value = Resource.Success(it.data!!)
-                } catch (ex: Exception) {
-                    mutableGrafik.value = Resource.Error("")
-                    ex.printStackTrace()
-                }
-            }
+//            callGrafik.await().distinctUntilChanged().filter {
+//                it !== Resource.Loading("")
+//            }.collectLatest {
+//                try {
+//                    mutableGrafik.value = Resource.Success(it.data!!)
+//                } catch (ex: Exception) {
+//                    mutableGrafik.value = Resource.Error("")
+//                    ex.printStackTrace()
+//                }
+//            }
 
-            result(immutablePrediksi, immutableGrafik)
+            result(immutablePrediksi)
 
 //            grafikUseCase.getGrafik()
 //                .distinctUntilChanged()

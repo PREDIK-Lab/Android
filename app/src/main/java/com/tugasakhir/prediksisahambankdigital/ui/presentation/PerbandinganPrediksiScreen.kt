@@ -87,8 +87,8 @@ fun PerbandinganPrediksiScreen(
     var hargaPenutupanBesok2: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
-    var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
-    var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
+    //var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
+    //var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
     var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
     var isError: Boolean? by rememberSaveable { mutableStateOf(null) }
 
@@ -110,7 +110,7 @@ fun PerbandinganPrediksiScreen(
             isLoading = true
             isError = false
 
-            perbandinganPrediksiViewModel.getPerbandinganPrediksi { prediksi, grafik ->
+            perbandinganPrediksiViewModel.getPerbandinganPrediksi { prediksi /*, grafik*/ ->
                 prediksi.value.let {
                     when (it) {
                         is Resource.Loading -> {
@@ -136,25 +136,25 @@ fun PerbandinganPrediksiScreen(
                     }
                 }
 
-                grafik.value.let {
-                    when (it) {
-                        is Resource.Loading -> {
-                            isLoading = true
-                            isError = false
-                        }
-                        is Resource.Success -> {
-                            isLoading = false
-                            isError = false
-                            ukuran = it.data?.size
-                            grafikSahamList = it.data
-                        }
-                        is Resource.Error -> {
-                            isLoading = false
-                            isError = true
-                        }
-                        else -> {}
-                    }
-                }
+//                grafik.value.let {
+//                    when (it) {
+//                        is Resource.Loading -> {
+//                            isLoading = true
+//                            isError = false
+//                        }
+//                        is Resource.Success -> {
+//                            isLoading = false
+//                            isError = false
+//                            ukuran = it.data?.size
+//                            grafikSahamList = it.data
+//                        }
+//                        is Resource.Error -> {
+//                            isLoading = false
+//                            isError = true
+//                        }
+//                        else -> {}
+//                    }
+//                }
             }
         }
 
