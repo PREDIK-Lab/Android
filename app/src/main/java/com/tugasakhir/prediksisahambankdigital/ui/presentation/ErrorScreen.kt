@@ -13,6 +13,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tugasakhir.prediksisahambankdigital.R
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 
 @Composable
 fun ErrorScreen(modifier: Modifier) {
@@ -24,27 +26,23 @@ fun ErrorScreen(modifier: Modifier) {
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
-                    painterResource(id = R.drawable.ic_launcher_foreground),
+                    painterResource(id = R.drawable.baseline_signal_cellular_connected_no_internet_0_bar_24),
                     modifier = Modifier.size(130.dp),
                     contentDescription = null
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = "Maaf, koneksi internet Anda bermasalah...",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                SubTitleText(
+                    Modifier,
+                    "Maaf, koneksi internet Anda bermasalah..."
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Text(
-                    text = "Coba cek kembali jaringan Anda. Halaman ini akan memuat secara otomatis apabila terhubung kembali.",
-                    fontSize = 15.sp,
-                    textAlign = TextAlign.Center,
-                    lineHeight = 23.sp
+                DescriptionText(
+                    Modifier,
+                    "Coba cek kembali jaringan Anda. Halaman ini akan memuat secara otomatis apabila terhubung kembali."
                 )
             }
         }
