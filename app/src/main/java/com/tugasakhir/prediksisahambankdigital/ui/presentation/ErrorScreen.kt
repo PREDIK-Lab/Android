@@ -13,8 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tugasakhir.prediksisahambankdigital.R
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 
 @Composable
 fun ErrorScreen(modifier: Modifier) {
@@ -33,16 +31,22 @@ fun ErrorScreen(modifier: Modifier) {
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                SubTitleText(
-                    Modifier,
-                    "Maaf, koneksi internet Anda bermasalah..."
+                Text(
+                    text = "Maaf, koneksi internet Anda bermasalah...",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 0.sp
                 )
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                DescriptionText(
-                    Modifier,
-                    "Coba cek kembali jaringan Anda. Halaman ini akan memuat secara otomatis apabila terhubung kembali."
+                Text(
+                    text = "Coba cek kembali jaringan Anda. Halaman ini akan memuat secara otomatis apabila terhubung kembali.",
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 23.sp,
+                    letterSpacing = 0.sp
                 )
             }
         }
