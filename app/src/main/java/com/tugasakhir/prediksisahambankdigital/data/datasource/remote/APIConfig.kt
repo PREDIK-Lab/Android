@@ -17,7 +17,7 @@ object APIConfig {
 
     fun provideApiService(): APIService {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://stock-model-backend.up.railway.app/")
+            .baseUrl("https://predik-model-deployment.up.railway.app/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(provideOkHttpClient())
             .build()
