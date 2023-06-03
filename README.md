@@ -9,11 +9,20 @@ PREDIK dikembangkan oleh Paulina Graciela Harmanto, dengan bimbingan dari Timoth
 # Spesifikasi PREDIK
 Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan perangkat keras dan lunak yang dibutuhkan untuk dapat menggunakan aplikasi ini.
 
-1. Sistem
+1. Ketentuan pengembangan aplikasi ini
 
-| Kategori        | Nama           | Versi minimum  |
-| :-----------: |:-------------:| :-----:|
-| Platform      | Android Studio | Dolphin |
-| Library dasar      | Jetpack Compose | ... |
+|   Kategori    |      Nama       |  Versi minimum  |
+|:-------------:|:---------------:|:---------------:|
+|   *Platform   | Android Studio  |    Chipmunk     |
+| Library dasar | Jetpack Compose |      1.4.1      |
 
-2. Ketentuan perangkat keras dan lunak
+* > **Peringatan: Pengembangan aplikasi ini belum dapat dilakukan pada Android Studio versi Flamingo hingga ke atas, karena masih membutuhkan beberapa penyesuaian.**
+
+2. Ketentuan ponsel untuk dapat menggunakan aplikasi ini
+
+|           Kategori            | Kriteria minimum |
+|:-----------------------------:|:----------------:|
+|       Versi OS Android        |   7.0 (Nougat)   |
+|       Memori RAM ponsel       |       4 GB       |
+| Ruang penyimpanan ponsel sisa |      200 MB      |
+|       Koneksi internet        |        4G        |
