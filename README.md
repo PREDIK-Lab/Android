@@ -11,12 +11,12 @@ Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan pengembangan 
 
 1. Ketentuan pengembangan aplikasi ini
 
-|   Kategori    |      Nama       |  Versi minimum  |
-|:-------------:|:---------------:|:---------------:|
-|   *Platform   | Android Studio  |    Chipmunk     |
-| Library dasar | Jetpack Compose |      1.4.1      |
+|   Kategori    |      Nama       | Versi minimum |
+|:-------------:|:---------------:|:-------------:|
+|   *Platform   | *Android Studio |   *Chipmunk   |
+| Library dasar | Jetpack Compose |     1.4.1     |
 
-**Peringatan: Pengembangan aplikasi ini belum dapat dilakukan pada Android Studio versi Flamingo hingga ke atas, karena masih membutuhkan beberapa penyesuaian.**
+***Warning**: Pengembangan aplikasi ini belum dapat dilakukan pada Android Studio versi Flamingo hingga ke atas, karena masih membutuhkan beberapa penyesuaian.
 
 2. Ketentuan ponsel untuk dapat menggunakan aplikasi ini
 
