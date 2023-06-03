@@ -7,7 +7,7 @@ PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memil
 PREDIK dikembangkan oleh Paulina Graciela Harmanto, dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto.
 
 # Spesifikasi PREDIK
-Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan perangkat keras dan lunak yang dibutuhkan untuk dapat menggunakan aplikasi ini.
+Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan pengembangan aplikasi dan ponsel yang dibutuhkan untuk dapat menggunakan aplikasi ini.
 
 1. Ketentuan pengembangan aplikasi ini
 
@@ -16,7 +16,7 @@ Berikut merupakan deskripsi sistem pada aplikasi PREDIK, ketentuan perangkat ker
 |   *Platform   | Android Studio  |    Chipmunk     |
 | Library dasar | Jetpack Compose |      1.4.1      |
 
-* > **Peringatan: Pengembangan aplikasi ini belum dapat dilakukan pada Android Studio versi Flamingo hingga ke atas, karena masih membutuhkan beberapa penyesuaian.**
+**Peringatan: Pengembangan aplikasi ini belum dapat dilakukan pada Android Studio versi Flamingo hingga ke atas, karena masih membutuhkan beberapa penyesuaian.**
 
 2. Ketentuan ponsel untuk dapat menggunakan aplikasi ini
 
