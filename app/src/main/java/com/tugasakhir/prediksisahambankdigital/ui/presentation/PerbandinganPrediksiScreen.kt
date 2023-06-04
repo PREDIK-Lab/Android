@@ -11,8 +11,13 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -25,7 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.zIndex
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -51,6 +58,7 @@ import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiVie
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PerbandinganPrediksiScreen(
     modifier: Modifier,
@@ -72,7 +80,39 @@ fun PerbandinganPrediksiScreen(
     var dropdownSelectedNamaSaham by rememberSaveable { mutableStateOf(sahamList[0].nama) }
     var dropdownSelectedUrlSaham by rememberSaveable { mutableStateOf(sahamList[0].url) }
 
-    var key by rememberSaveable { mutableStateOf(sahamList[0].kode) }
+    val sahamItemSaver = run {
+        val keyKode = sahamList[0].kode
+        val keyNama = sahamList[0].nama
+        val keyUrl = sahamList[0].url
+
+        mapSaver(
+            save = { sahamItem: SahamItem ->
+                mapOf(
+                    keyKode to sahamItem.kode,
+                    keyNama to sahamItem.nama,
+                    keyUrl to sahamItem.url
+                )
+            },
+            restore = { restorationMap: Map<String, Any?> ->
+                SahamItem(
+                    restorationMap[keyKode] as String,
+                    restorationMap[keyNama] as String,
+                    restorationMap[keyUrl] as String
+                )
+            }
+        )
+    }
+
+    var keySahamItem by rememberSaveable(stateSaver = sahamItemSaver) {
+        mutableStateOf(
+            SahamItem(
+                sahamList[0].kode,
+                sahamList[0].nama,
+                sahamList[0].url
+            )
+        )
+    }
+    var key by rememberSaveable { mutableStateOf(keySahamItem.kode) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     // Ikon "up" muncul ketika di-expand, namun ikon "down" muncul saat collapse
@@ -80,6 +120,14 @@ fun PerbandinganPrediksiScreen(
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
+
+    val isRefreshing by perbandinganPrediksiViewModel.isRefreshing.collectAsStateWithLifecycle()
+    val pullRefreshState = rememberPullRefreshState(
+        isRefreshing, {
+            dropdownSelectedKodeSaham = keySahamItem.kode
+            dropdownSelectedNamaSaham = keySahamItem.nama
+            dropdownSelectedUrlSaham = keySahamItem.url
+        })
 
     var hargaPenutupanSaatIni: Float? by rememberSaveable { mutableStateOf(0.0F) }
     val hargaPenutupanSebelumnya: Float? by rememberSaveable { mutableStateOf(0.0F) }
@@ -158,7 +206,22 @@ fun PerbandinganPrediksiScreen(
             }
         }
 
-        Surface(modifier = modifier.verticalScroll(rememberScrollState())) {
+        Box(
+            modifier = modifier
+                .pullRefresh(pullRefreshState)
+                .verticalScroll(
+                    rememberScrollState()
+                )
+        ) {
+            PullRefreshIndicator(
+                refreshing = isRefreshing,
+                state = pullRefreshState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentWidth(align = Alignment.CenterHorizontally)
+                    .zIndex(99F)
+            )
+
             Column {
                 Spacer(modifier = modifier.height(50.dp))
 
@@ -169,6 +232,7 @@ fun PerbandinganPrediksiScreen(
                 Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
                     // Create an Outlined Text Field with icon and not expanded
                     TextField(
+                        textStyle = TextStyle(letterSpacing = 0.sp),
                         value = "$dropdownSelectedNamaSaham (${dropdownSelectedKodeSaham})",
                         onValueChange = { dropdownSelectedKodeSaham = it },
                         readOnly = true,
@@ -209,7 +273,10 @@ fun PerbandinganPrediksiScreen(
 
                                 isDropdownExpanded = false
                             }) {
-                                Text(text = "${label.nama} (${label.kode})")
+                                Text(
+                                    text = "${label.nama} (${label.kode})",
+                                    style = TextStyle(letterSpacing = 0.sp)
+                                )
                             }
                         }
                     }
@@ -218,9 +285,15 @@ fun PerbandinganPrediksiScreen(
                 Spacer(modifier = modifier.height(30.dp))
 
                 ButtonText(modifier = Modifier, onClick = {
-                    perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
+                    keySahamItem = SahamItem(
+                        dropdownSelectedKodeSaham,
+                        dropdownSelectedNamaSaham,
+                        dropdownSelectedUrlSaham
+                    )
 
-                    key = dropdownSelectedKodeSaham
+                    perbandinganPrediksiViewModel.setKodeSaham(keySahamItem.kode)
+
+                    key = keySahamItem.kode
                 }, judul = "Prediksi")
 
 //                Button(

@@ -29,6 +29,11 @@ class PerbandinganPrediksiViewModel(
     val immutableGrafik: StateFlow<Resource<List<Grafik>>>
         get() = mutableGrafik.asStateFlow()
 
+    private val _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean>
+        get() = _isRefreshing.asStateFlow()
+
+
     //val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
 
     fun setKodeSaham(kodeSaham: String) {
@@ -63,6 +68,8 @@ class PerbandinganPrediksiViewModel(
 //            }
 
             result(immutablePrediksi)
+
+            _isRefreshing.emit(false)
 
 //            grafikUseCase.getGrafik()
 //                .distinctUntilChanged()
