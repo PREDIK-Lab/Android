@@ -27,22 +27,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
-import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
-import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.tugasakhir.prediksisahambankdigital.PerbandinganPrediksiItem
 import com.tugasakhir.prediksisahambankdigital.R
 import com.tugasakhir.prediksisahambankdigital.SahamItem
 import com.tugasakhir.prediksisahambankdigital.data.Resource
-import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
-import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
@@ -87,8 +79,6 @@ fun PerbandinganPrediksiScreen(
     var hargaPenutupanBesok2: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
-    //var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
-    //var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
     var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
     var isError: Boolean? by rememberSaveable { mutableStateOf(null) }
 
@@ -135,26 +125,6 @@ fun PerbandinganPrediksiScreen(
                         else -> {}
                     }
                 }
-
-//                grafik.value.let {
-//                    when (it) {
-//                        is Resource.Loading -> {
-//                            isLoading = true
-//                            isError = false
-//                        }
-//                        is Resource.Success -> {
-//                            isLoading = false
-//                            isError = false
-//                            ukuran = it.data?.size
-//                            grafikSahamList = it.data
-//                        }
-//                        is Resource.Error -> {
-//                            isLoading = false
-//                            isError = true
-//                        }
-//                        else -> {}
-//                    }
-//                }
             }
         }
 
@@ -169,6 +139,7 @@ fun PerbandinganPrediksiScreen(
                 Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
                     // Create an Outlined Text Field with icon and not expanded
                     TextField(
+                        textStyle = TextStyle(letterSpacing = 0.sp),
                         value = "$dropdownSelectedNamaSaham (${dropdownSelectedKodeSaham})",
                         onValueChange = { dropdownSelectedKodeSaham = it },
                         readOnly = true,
@@ -209,7 +180,10 @@ fun PerbandinganPrediksiScreen(
 
                                 isDropdownExpanded = false
                             }) {
-                                Text(text = "${label.nama} (${label.kode})")
+                                Text(
+                                    text = "${label.nama} (${label.kode})",
+                                    style = TextStyle(letterSpacing = 0.sp)
+                                )
                             }
                         }
                     }
@@ -222,22 +196,6 @@ fun PerbandinganPrediksiScreen(
 
                     key = dropdownSelectedKodeSaham
                 }, judul = "Prediksi")
-
-//                Button(
-//                    onClick = {
-//                        perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
-//
-//                        key = dropdownSelectedKodeSaham
-//                    },
-//                    shape = RoundedCornerShape(20.dp),
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(start = 15.dp, end = 15.dp)
-//                        .height(50.dp),
-//                    colors = ButtonDefaults.buttonColors(backgroundColor = DarkBlue1)
-//                ) {
-//                    Text(text = "Prediksi", color = Color.White, fontWeight = FontWeight.Bold)
-//                }
 
                 Spacer(modifier = modifier.height(50.dp))
 
@@ -331,43 +289,4 @@ fun PerbandinganPrediksiScreen(
     } else {
         ErrorScreen(modifier)
     }
-}
-
-@Composable
-fun PerbandinganPrediksiGrafikSaham(modifier: Modifier, grafikSahamList: List<Grafik>) {
-    SubTitleText(modifier = modifier, judul = "Grafik Saham")
-
-    Spacer(modifier = modifier.height(30.dp))
-
-    val hargaPenutupanList = grafikSahamList.map { it.hargaPenutupan }.toTypedArray()
-
-    val chartEntryModel = entryModelOf(*hargaPenutupanList)
-
-    Chart(
-        chart = lineChart(spacing = 0.0.dp),
-        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-        startAxis = startAxis(),
-        bottomAxis = bottomAxis(
-            tickPosition = HorizontalAxis.TickPosition.Center(1, 20),
-            //sizeConstraint = Axis.SizeConstraint.Exact(1500f)
-        ),
-        isZoomEnabled = true,
-        model = chartEntryModel
-    )
-}
-
-@Composable
-fun PerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
-    SubTitleText(modifier = modifier, judul = "Grafik Saham")
-
-    Spacer(modifier = modifier.height(30.dp))
-
-    Box(
-        modifier = Modifier
-            .padding(start = 15.dp, end = 15.dp)
-            .shimmer()
-            .fillMaxWidth()
-            .height(200.dp)
-            .background(Color.Gray)
-    )
 }

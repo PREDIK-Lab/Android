@@ -2,7 +2,6 @@ package com.tugasakhir.prediksisahambankdigital.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
@@ -29,8 +28,6 @@ class PerbandinganPrediksiViewModel(
     val immutableGrafik: StateFlow<Resource<List<Grafik>>>
         get() = mutableGrafik.asStateFlow()
 
-    //val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
-
     fun setKodeSaham(kodeSaham: String) {
         mutableKodeSaham.value = kodeSaham
     }
@@ -38,7 +35,6 @@ class PerbandinganPrediksiViewModel(
     fun getPerbandinganPrediksi(result: (prediksi: StateFlow<Resource<Prediksi>>/*, grafik: StateFlow<Resource<List<Grafik>>>*/) -> Unit) {
         viewModelScope.launch {
             val callPrediksi = async { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
-            val callGrafik = async { grafikUseCase.getGrafik(mutableKodeSaham.value) }
 
             callPrediksi.await().distinctUntilChanged().filter {
                 it !== Resource.Loading("")
@@ -51,29 +47,7 @@ class PerbandinganPrediksiViewModel(
                 }
             }
 
-//            callGrafik.await().distinctUntilChanged().filter {
-//                it !== Resource.Loading("")
-//            }.collectLatest {
-//                try {
-//                    mutableGrafik.value = Resource.Success(it.data!!)
-//                } catch (ex: Exception) {
-//                    mutableGrafik.value = Resource.Error("")
-//                    ex.printStackTrace()
-//                }
-//            }
-
             result(immutablePrediksi)
-
-//            grafikUseCase.getGrafik()
-//                .distinctUntilChanged()
-//                .collect {
-//                    try {
-//                        mutableGrafik.value = Resource.Success(it.data!!)
-//                    } catch (ex: Exception) {
-//                        //mutableGrafik.value = Resource.Error("")
-//                        ex.printStackTrace()
-//                    }
-//                }
         }
     }
 }
