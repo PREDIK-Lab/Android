@@ -82,17 +82,6 @@ class DetailPerbandinganPrediksiViewModel(
             }
 
             result(immutablePrediksi, immutableGrafik, immutableInformasi)
-
-//            grafikUseCase.getGrafik()
-//                .distinctUntilChanged()
-//                .collect {
-//                    try {
-//                        mutableGrafik.value = Resource.Success(it.data!!)
-//                    } catch (ex: Exception) {
-//                        //mutableGrafik.value = Resource.Error("")
-//                        ex.printStackTrace()
-//                    }
-//                }
         }
     }
 }
