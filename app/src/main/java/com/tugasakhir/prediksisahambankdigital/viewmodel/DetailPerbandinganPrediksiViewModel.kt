@@ -36,8 +36,6 @@ class DetailPerbandinganPrediksiViewModel(
     val immutableInformasi: StateFlow<Resource<Informasi>>
         get() = mutableInformasi.asStateFlow()
 
-    //val prediksi = prediksiUseCase.getPrediksi("").asLiveData()
-
     fun setKodeSaham(kodeSaham: String) {
         mutableKodeSaham.value = kodeSaham
     }
