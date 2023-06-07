@@ -4,13 +4,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 
 @Composable
 fun Button(text: String, onClick: () -> Unit) {
@@ -19,7 +19,7 @@ fun Button(text: String, onClick: () -> Unit) {
         modifier = Modifier.padding(all = Dp(10F)),
         enabled = true,
         shape = RoundedCornerShape(20.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = DarkBlue1),
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
     )
 
     // Add text on the button

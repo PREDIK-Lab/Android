@@ -2,10 +2,7 @@ package com.tugasakhir.prediksisahambankdigital.ui.util
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -40,7 +37,7 @@ fun PageTopAppBar(onBack: () -> Unit, title: String = "") {
                 )
             }
         },
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.colors.onPrimary,
         elevation = 2.dp
     )
 }

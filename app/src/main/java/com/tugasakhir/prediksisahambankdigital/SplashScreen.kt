@@ -2,6 +2,7 @@ package com.tugasakhir.prediksisahambankdigital
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +19,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import kotlinx.coroutines.delay
 
 private const val SplashWaitTime: Long = 2000
@@ -27,7 +27,7 @@ private const val logo = R.drawable.logo_in_white
 @Composable
 fun SplashScreen(modifier: Modifier = Modifier, onTimeOut: () -> Unit) {
     Surface(
-        color = DarkBlue1,
+        color = MaterialTheme.colors.primary,
         modifier = modifier
     ) {
         Box(

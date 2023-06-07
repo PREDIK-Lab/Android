@@ -1,5 +1,6 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
+//import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-//import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -30,7 +30,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import coil.compose.rememberAsyncImagePainter
 import com.jaikeerthick.composable_graphs.color.*
-import com.jaikeerthick.composable_graphs.composables.LineGraph
+import com.jaikeerthick.composable_graphs.composables.MultipleLineGraph
+import com.jaikeerthick.composable_graphs.composables.SingleLineGraph
 import com.jaikeerthick.composable_graphs.data.GraphData
 import com.jaikeerthick.composable_graphs.style.LineGraphStyle
 import com.jaikeerthick.composable_graphs.style.LinearGraphVisibility
@@ -42,7 +43,10 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
-import com.tugasakhir.prediksisahambankdigital.ui.theme.*
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkGrey1
+import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.parseDayMonthYearFormat
@@ -75,35 +79,40 @@ fun DetailPerbandinganPrediksiScreen(
 
     val key by rememberSaveable { mutableStateOf(kodeSaham) }
 
-    // Up icon when expanded and down icon when collapsed
-//    val icon = if (isDropdownExpanded)
-//        Icons.Filled.KeyboardArrowUp
-//    else
-//        Icons.Filled.KeyboardArrowDown
-
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
-    var grafikSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
-    var grafikSahamListRaw: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
-    var tanggalList: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
-    var tanggalListRaw: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
-    var hargaPenutupanList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
-    var hargaPenutupanListRaw: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var grafikHistoriSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var grafikHistoriSahamListRaw: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var tanggalHistoriList: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var tanggalHistoriListRaw: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var hargaPenutupanHistoriList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var hargaPenutupanHistoriListRaw: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
 
     var hargaSahamSaatIni: Float by rememberSaveable { mutableStateOf(0.0F) }
+    var tanggalPrediksiList: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var tanggalPrediksiListRaw: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
+
     var prediksiLSTMList: List<DetailPrediksi>? by rememberSaveable { mutableStateOf(emptyList()) }
-//    var perbandinganPrediksiLSTMList: List<PerbandinganPrediksiItem>? by rememberSaveable {
-//        mutableStateOf(
-//            emptyList()
-//        )
-//    }
+    var hargaPenutupanPrediksiLSTMList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var hargaPenutupanPrediksiLSTMListRaw: List<Float>? by rememberSaveable {
+        mutableStateOf(
+            emptyList()
+        )
+    }
     var rmseLSTM: Float? by rememberSaveable { mutableStateOf(0.0F) }
+
     var prediksiGRUList: List<DetailPrediksi>? by rememberSaveable { mutableStateOf(emptyList()) }
-//    var perbandinganPrediksiGRUList: List<PerbandinganPrediksiItem>? by rememberSaveable {
-//        mutableStateOf(
-//            emptyList()
-//        )
-//    }
+    var hargaPenutupanPrediksiGRUList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var hargaPenutupanPrediksiGRUListRaw: List<Float>? by rememberSaveable {
+        mutableStateOf(
+            emptyList()
+        )
+    }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
+
+    val clickedPrediksiPoin: MutableState<Pair<Any, Any>?> =
+        rememberSaveable { mutableStateOf(null) }
+    val clickedPrediksiOffset: MutableState<Offset?> = remember { mutableStateOf(null) }
+
     var informasiSaham: Informasi by rememberSaveable {
         mutableStateOf(
             Informasi(
@@ -131,8 +140,9 @@ fun DetailPerbandinganPrediksiScreen(
     )
     val opsiList = opsi.toList()
     var selectedOpsi by rememberSaveable { mutableStateOf(opsiList[5]) }
-    val clickedPoin: MutableState<Pair<Any, Any>?> = rememberSaveable { mutableStateOf(null) }
-    val clickedOffset: MutableState<Offset?> = remember { mutableStateOf(null) }
+    val clickedHistoriPoin: MutableState<Pair<Any, Any>?> =
+        rememberSaveable { mutableStateOf(null) }
+    val clickedHistoriOffset: MutableState<Offset?> = remember { mutableStateOf(null) }
 
     val isOnline = checkConnectivityStatus()
     var isOnlinePage by rememberSaveable { mutableStateOf(true) }
@@ -162,10 +172,34 @@ fun DetailPerbandinganPrediksiScreen(
                             isLoading = false
                             isError = false
                             hargaSahamSaatIni = it.data!!.hargaPenutupanSaatIni
+
                             prediksiLSTMList = it.data.prediksiLSTM
                             prediksiGRUList = it.data.prediksiGRU
                             rmseLSTM = it.data.rmseLSTM
                             rmseGRU = it.data.rmseGRU
+
+                            val tanggal =
+                                prediksiLSTMList!!.map { parseDayMonthYearFormat(it.tanggal) }
+                                    .toTypedArray()
+                                    .toList()
+                            val hargaPenutupanLSTM =
+                                prediksiLSTMList!!.map { it.prediksiHargaPenutupan }
+                                    .toTypedArray().toList()
+                            val hargaPenutupanGRU =
+                                prediksiGRUList!!.map { it.prediksiHargaPenutupan }
+                                    .toTypedArray().toList()
+
+                            tanggalPrediksiList = tanggal.map { list ->
+                                GraphData.String(list)
+                            }
+                            tanggalPrediksiListRaw = tanggal.map { list ->
+                                GraphData.String(list)
+                            }
+
+                            hargaPenutupanPrediksiLSTMList = hargaPenutupanLSTM
+                            hargaPenutupanPrediksiLSTMListRaw = hargaPenutupanLSTM
+                            hargaPenutupanPrediksiGRUList = hargaPenutupanGRU
+                            hargaPenutupanPrediksiGRUListRaw = hargaPenutupanGRU
                         }
                         is Resource.Error -> {
                             isLoading = false
@@ -184,24 +218,24 @@ fun DetailPerbandinganPrediksiScreen(
                             isLoading = false
                             isError = false
                             ukuran = it.data?.size
-                            grafikSahamList = it.data
-                            grafikSahamListRaw = it.data
+                            grafikHistoriSahamList = it.data
+                            grafikHistoriSahamListRaw = it.data
 
                             val tanggal =
                                 it.data!!.map { parseDayMonthYearFormat(it.tanggal) }.toTypedArray()
                                     .toList()
                             val hargaPenutupan =
-                                grafikSahamList!!.map { it.hargaPenutupan }
+                                grafikHistoriSahamList!!.map { it.hargaPenutupan }
                                     .toTypedArray().toList()
 
-                            tanggalList = tanggal.map { list ->
+                            tanggalHistoriList = tanggal.map { list ->
                                 GraphData.String(list)
                             }
-                            tanggalListRaw = tanggal.map { list ->
+                            tanggalHistoriListRaw = tanggal.map { list ->
                                 GraphData.String(list)
                             }
-                            hargaPenutupanList = hargaPenutupan
-                            hargaPenutupanListRaw = hargaPenutupan
+                            hargaPenutupanHistoriList = hargaPenutupan
+                            hargaPenutupanHistoriListRaw = hargaPenutupan
                         }
                         is Resource.Error -> {
                             isLoading = false
@@ -425,16 +459,35 @@ fun DetailPerbandinganPrediksiScreen(
                     Spacer(modifier = Modifier.height(50.dp))
 
                     /**
-                     * Grafik Saham
+                     * Grafik Prediksi Saham
                      */
                     if (isLoading == false && isError == false) {
-                        DetailPerbandinganPrediksiGrafikSaham(
+                        DetailPerbandinganPrediksiGrafikPrediksiSaham(
                             Modifier,
-                            tanggalList!!,
-                            hargaPenutupanList!!,
+                            tanggalPrediksiList!!,
+                            hargaPenutupanPrediksiLSTMList!!,
+                            hargaPenutupanPrediksiGRUList!!,
+                            0,
+                            clickedPrediksiPoin,
+                            clickedPrediksiOffset,
+                        )
+                    } else {
+                        DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(Modifier)
+                    }
+
+                    Spacer(modifier = Modifier.height(50.dp))
+
+                    /**
+                     * Grafik Histori Saham
+                     */
+                    if (isLoading == false && isError == false) {
+                        DetailPerbandinganPrediksiGrafikHistoriSaham(
+                            Modifier,
+                            tanggalHistoriList!!,
+                            hargaPenutupanHistoriList!!,
                             selectedOpsi.second,
-                            clickedPoin,
-                            clickedOffset
+                            clickedHistoriPoin,
+                            clickedHistoriOffset
                         )
 
                         Spacer(modifier = Modifier.height(15.dp))
@@ -445,16 +498,16 @@ fun DetailPerbandinganPrediksiScreen(
                             selectedOption = selectedOpsi,
                             onOptionSelect = { opsi ->
                                 selectedOpsi = opsi
-                                clickedPoin.value = null
-                                clickedOffset.value = null
-                                tanggalList =
-                                    if (selectedOpsi.second > 0) tanggalListRaw!!.takeLast(
+                                clickedHistoriPoin.value = null
+                                clickedHistoriOffset.value = null
+                                tanggalHistoriList =
+                                    if (selectedOpsi.second > 0) tanggalHistoriListRaw!!.takeLast(
                                         selectedOpsi.second
-                                    ) else tanggalListRaw
-                                hargaPenutupanList =
-                                    if (selectedOpsi.second > 0) hargaPenutupanListRaw!!.takeLast(
+                                    ) else tanggalHistoriListRaw
+                                hargaPenutupanHistoriList =
+                                    if (selectedOpsi.second > 0) hargaPenutupanHistoriListRaw!!.takeLast(
                                         selectedOpsi.second
-                                    ) else hargaPenutupanListRaw
+                                    ) else hargaPenutupanHistoriListRaw
                             },
                             modifier = Modifier
                                 .padding(all = 16.dp)
@@ -462,7 +515,7 @@ fun DetailPerbandinganPrediksiScreen(
                                 .height(56.dp)
                         )
                     } else {
-                        DetailPerbandinganPrediksiGrafikSahamShimmer(Modifier)
+                        DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(Modifier)
                     }
 
                     Spacer(modifier = Modifier.height(50.dp))
@@ -490,16 +543,16 @@ fun DetailPerbandinganPrediksiScreen(
 }
 
 @Composable
-fun DetailPerbandinganPrediksiGrafikSaham(
+fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
     modifier: Modifier,
-    //grafikSahamList: List<Grafik>,
     tanggalList: List<GraphData>,
-    hargaPenutupanList: List<Float>,
+    hargaPenutupanPrediksiLSTMList: List<Float>,
+    hargaPenutupanPrediksiGRUList: List<Float>,
     index: Int,
     clickedPoin: MutableState<Pair<Any, Any>?>,
     clickedOffset: MutableState<Offset?>
 ) {
-    SubTitleText(modifier = modifier, judul = "Grafik Saham")
+    SubTitleText(modifier = modifier, judul = "Grafik Prediksi Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
@@ -524,14 +577,6 @@ fun DetailPerbandinganPrediksiGrafikSaham(
             )
         )
     )
-
-//    val tanggalList = grafikSahamList.map { it.tanggal }.toTypedArray().toList().map {
-//        GraphData.String(it)
-//    }
-//    val hargaPenutupanList = grafikSahamList.map { it.hargaPenutupan }.toTypedArray().toList()
-
-//    val xAxisData = if (index > 0) tanggalList.takeLast(index) else tanggalList
-//    val yAxisData = if (index > 0) hargaPenutupanList.takeLast(index) else hargaPenutupanList
 
     /**
      * Menampilkan nilai dari poin yang diklik (x: tanggal, y: harga penutupan)
@@ -560,9 +605,83 @@ fun DetailPerbandinganPrediksiGrafikSaham(
     /**
      * Menampilkan grafik saham
      */
-    LineGraph(
+    MultipleLineGraph(
         xAxisData = tanggalList,
-        yAxisData = hargaPenutupanList,
+        yAxisData = listOf(hargaPenutupanPrediksiLSTMList, hargaPenutupanPrediksiGRUList),
+        style = lineGraphStyle,
+        index = if (index > 0) index else 0,
+        onPointClicked = {
+            clickedPoin.value = it
+        },
+        clickedOffset = clickedOffset
+    )
+}
+
+@Composable
+fun DetailPerbandinganPrediksiGrafikHistoriSaham(
+    modifier: Modifier,
+    tanggalHistoriList: List<GraphData>,
+    hargaPenutupanHistoriList: List<Float>,
+    index: Int,
+    clickedPoin: MutableState<Pair<Any, Any>?>,
+    clickedOffset: MutableState<Offset?>,
+) {
+    SubTitleText(modifier = modifier, judul = "Grafik Histori Saham")
+
+    Spacer(modifier = modifier.height(30.dp))
+
+    val lineGraphStyle = LineGraphStyle(
+        paddingValues = PaddingValues(
+            start = 15.dp,
+            end = 15.dp
+        ),
+        height = 250.dp,
+        visibility = LinearGraphVisibility(
+            isHeaderVisible = false,
+            isXAxisLabelVisible = true,
+            isYAxisLabelVisible = true,
+            isCrossHairVisible = true
+        ),
+        colors = LinearGraphColors(
+            lineColor = GraphAccent2,
+            pointColor = Color.Transparent,
+            clickHighlightColor = PointHighlight2,
+            fillGradient = Brush.verticalGradient(
+                listOf(Gradient3, Gradient2)
+            )
+        )
+    )
+
+    /**
+     * Menampilkan nilai dari poin yang diklik (x: tanggal, y: harga penutupan)
+     */
+    Card(
+        modifier = Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .padding(15.dp),
+            text = clickedPoin.value?.let { "(x, y): (${it.first}, ${it.second})" }
+                ?: "Klik poin pada grafik untuk melihat nilai (x, y).",
+            fontSize = 15.sp,
+            lineHeight = 23.sp,
+            letterSpacing = 0.sp,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+
+    Spacer(modifier = Modifier.height(5.dp))
+
+    /**
+     * Menampilkan grafik saham
+     */
+    SingleLineGraph(
+        xAxisData = tanggalHistoriList,
+        yAxisData = hargaPenutupanHistoriList,
         style = lineGraphStyle,
         index = if (index > 0) index else 0,
         onPointClicked = {
@@ -689,8 +808,24 @@ fun DetailPerbandinganPrediksiTentangSaham(
 }
 
 @Composable
-fun DetailPerbandinganPrediksiGrafikSahamShimmer(modifier: Modifier) {
-    TitleText(modifier = modifier, judul = "Grafik Saham")
+fun DetailPerbandinganPrediksiGrafikPrediksiSahamShimmer(modifier: Modifier) {
+    TitleText(modifier = modifier, judul = "Grafik Prediksi Saham")
+
+    Spacer(modifier = modifier.height(30.dp))
+
+    Box(
+        modifier = Modifier
+            .padding(start = 15.dp, end = 15.dp)
+            .shimmer()
+            .fillMaxWidth()
+            .height(200.dp)
+            .background(Color.Gray)
+    )
+}
+
+@Composable
+fun DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(modifier: Modifier) {
+    TitleText(modifier = modifier, judul = "Grafik Histori Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 

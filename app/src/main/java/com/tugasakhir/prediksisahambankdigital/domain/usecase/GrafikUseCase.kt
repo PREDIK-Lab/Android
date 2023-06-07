@@ -5,5 +5,5 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import kotlinx.coroutines.flow.Flow
 
 interface GrafikUseCase {
-    suspend fun getGrafik(kodeSaham: String): Flow<Resource<List<Grafik>>>
+    fun getGrafik(kodeSaham: String): Flow<Resource<List<Grafik>>>
 }

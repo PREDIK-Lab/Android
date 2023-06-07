@@ -10,7 +10,6 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Prediksi
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.GrafikUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.InformasiUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.PrediksiUseCase
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -40,46 +39,71 @@ class DetailPerbandinganPrediksiViewModel(
         mutableKodeSaham.value = kodeSaham
     }
 
-    fun getDetailPerbandinganPrediksi(result: (prediksi: StateFlow<Resource<Prediksi>>, grafik: StateFlow<Resource<List<Grafik>>>, informasi: StateFlow<Resource<Informasi>>) -> Unit) {
+    suspend fun getDetailPerbandinganPrediksi(result: (prediksi: StateFlow<Resource<Prediksi>>, grafik: StateFlow<Resource<List<Grafik>>>, informasi: StateFlow<Resource<Informasi>>) -> Unit) {
         viewModelScope.launch {
-            val callPrediksi = async { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
-            val callGrafik = async { grafikUseCase.getGrafik(mutableKodeSaham.value) }
-            val callInformasi = async { informasiUseCase.getInformasi(mutableKodeSaham.value) }
+            val callPrediksi = prediksiUseCase.getPrediksi(mutableKodeSaham.value)
+            val callGrafik = grafikUseCase.getGrafik(mutableKodeSaham.value)
+            val callInformasi = informasiUseCase.getInformasi(mutableKodeSaham.value)
 
-            callPrediksi.await().distinctUntilChanged().filter {
-                it !== Resource.Loading("")
-            }.collectLatest {
+            callPrediksi.zip(callGrafik) { prediksi, grafik ->
+                Pair(prediksi, grafik)
+            }.zip(callInformasi) { pair, informasi ->
+                Pair(pair, informasi)
+            }.collectLatest { pair ->
                 try {
-                    mutablePrediksi.value = Resource.Success(it.data!!)
+                    mutablePrediksi.value = Resource.Success(pair.first.first.data!!)
+                    mutableGrafik.value = Resource.Success(pair.first.second.data!!)
+                    mutableInformasi.value = Resource.Success(pair.second.data!!)
                 } catch (ex: Exception) {
                     mutablePrediksi.value = Resource.Error("")
-                    ex.printStackTrace()
-                }
-            }
-
-            callGrafik.await().distinctUntilChanged().filter {
-                it !== Resource.Loading("")
-            }.collectLatest {
-                try {
-                    mutableGrafik.value = Resource.Success(it.data!!)
-                } catch (ex: Exception) {
                     mutableGrafik.value = Resource.Error("")
+                    mutableInformasi.value = Resource.Error("")
+
                     ex.printStackTrace()
                 }
             }
 
-            callInformasi.await().distinctUntilChanged().filter {
-                it !== Resource.Loading("")
-            }.collectLatest {
-                try {
-                    mutableInformasi.value = Resource.Success(it.data!!)
-                } catch (ex: Exception) {
-                    mutableInformasi.value = Resource.Error("")
-                    ex.printStackTrace()
-                }
-            }
+//            val callPrediksi = async(Dispatchers.IO) { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
+//            val callGrafik = async(Dispatchers.IO) { grafikUseCase.getGrafik(mutableKodeSaham.value) }
+//            val callInformasi = async(Dispatchers.IO) { informasiUseCase.getInformasi(mutableKodeSaham.value) }
+
+//            val time = measureTimeMillis {
+//                callPrediksi.await().distinctUntilChanged().filter {
+//                    it !== Resource.Loading("")
+//                }.collectLatest {
+//                    try {
+//                        mutablePrediksi.value = Resource.Success(it.data!!)
+//                    } catch (ex: Exception) {
+//                        mutablePrediksi.value = Resource.Error("")
+//                        ex.printStackTrace()
+//                    }
+//                }
+//
+//                callGrafik.await().distinctUntilChanged().filter {
+//                    it !== Resource.Loading("")
+//                }.collectLatest {
+//                    try {
+//                        mutableGrafik.value = Resource.Success(it.data!!)
+//                    } catch (ex: Exception) {
+//                        mutableGrafik.value = Resource.Error("")
+//                        ex.printStackTrace()
+//                    }
+//                }
+//
+//                callInformasi.await().distinctUntilChanged().filter {
+//                    it !== Resource.Loading("")
+//                }.collectLatest {
+//                    try {
+//                        mutableInformasi.value = Resource.Success(it.data!!)
+//                    } catch (ex: Exception) {
+//                        mutableInformasi.value = Resource.Error("")
+//                        ex.printStackTrace()
+//                    }
+//                }
 
             result(immutablePrediksi, immutableGrafik, immutableInformasi)
         }
+
+        //Log.d("async-await", "Time Taken To Complete-> $time ms.")
     }
 }

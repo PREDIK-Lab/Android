@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.runtime.Composable
@@ -235,7 +232,7 @@ private fun PrediksiSahamListItem(
             item.toString(),
             modifier = modifier
                 .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-            color = DarkBlue1,
+            color = MaterialTheme.colors.primary,
             fontSize = 18.sp
         )
     }

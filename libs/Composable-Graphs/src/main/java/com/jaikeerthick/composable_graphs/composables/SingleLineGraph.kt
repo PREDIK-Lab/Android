@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -26,7 +25,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 @Composable
-fun LineGraph(
+fun SingleLineGraph(
     xAxisData: List<GraphData>,
     yAxisData: List<Number>,
     header: @Composable () -> Unit = {},
@@ -186,7 +185,7 @@ fun LineGraph(
              */
             if (style.visibility.isXAxisLabelVisible) {
 
-                val xDivideResult = yAxisData.size / 10
+                val xDivideResult = if(yAxisData.size > 10) yAxisData.size / 10 else yAxisData.size / 3
                 val xNthDisplay =
                     xDivideResult * (yAxisData.size - index).toString().length + if (index == 0) 1 else index / 3
 
@@ -219,7 +218,7 @@ fun LineGraph(
                 val labelXOffset =
                     if (style.yAxisLabelPosition == LabelPosition.RIGHT) size.width else 0F
 
-                val yDivideResult = (yAxisLabelList.size / 10)
+                val yDivideResult = if (yAxisLabelList.size >= 10) yAxisLabelList.size / 10 else yAxisLabelList.size / 3
                 val yNthDisplay = yDivideResult * yAxisLabelList.size.toString().length
 
                 for (i in 0 until yAxisLabelList.size) {

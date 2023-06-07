@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 
 enum class MultiSelectorOption {
     Option,
@@ -70,7 +69,7 @@ fun MultiSelector(
                     Text(
                         text = option.first,
                         style = MaterialTheme.typography.body1,
-                        color = if (option == selectedOption) Color.White else DarkBlue1, //colors[index],
+                        color = if (option == selectedOption) Color.White else MaterialTheme.colors.primary, //colors[index],
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.padding(horizontal = 5.dp),

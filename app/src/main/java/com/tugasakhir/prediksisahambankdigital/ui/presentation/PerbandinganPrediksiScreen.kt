@@ -34,7 +34,6 @@ import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
@@ -263,7 +262,7 @@ fun PerbandinganPrediksiScreen(
                         style = TextStyle(
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = DarkBlue1,
+                            color = MaterialTheme.colors.primary,
                             letterSpacing = 0.sp
                         ),
                         onClick = {

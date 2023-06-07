@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -69,7 +70,7 @@ fun NumberBoxText(modifier: Modifier, judul: Number, fontSize: TextUnit = 23.sp)
         judul.toString(),
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 15.dp),
-        color = DarkBlue1,
+        color = MaterialTheme.colors.primary,
         fontWeight = FontWeight.Bold,
         fontSize = fontSize,
         letterSpacing = 0.sp
@@ -105,7 +106,7 @@ fun ListItemClickableText(modifier: Modifier, judul: String) {
         judul,
         modifier = modifier
             .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-        color = DarkBlue1,
+        color = MaterialTheme.colors.primary,
         fontSize = 15.sp,
         letterSpacing = 0.sp
     )
@@ -132,7 +133,7 @@ fun ButtonText(modifier: Modifier, onClick: () -> Unit, judul: String) {
             .fillMaxWidth()
             .padding(start = 15.dp, end = 15.dp)
             .height(50.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = DarkBlue1)
+        colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {
         Text(text = judul, color = Color.White, fontWeight = FontWeight.Bold, letterSpacing = 0.sp)
     }

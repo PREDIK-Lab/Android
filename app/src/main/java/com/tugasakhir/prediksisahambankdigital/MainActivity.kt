@@ -21,7 +21,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.tugasakhir.prediksisahambankdigital.ui.presentation.*
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkBlue1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.LightGrey1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.PrediksiSahamBankDigitalTheme
 
@@ -194,7 +193,7 @@ private fun BottomNavigationBar(
                     )
                 },
                 alwaysShowLabel = true,
-                selectedContentColor = DarkBlue1,
+                selectedContentColor = MaterialTheme.colors.primary,
                 unselectedContentColor = LightGrey1
             )
         }
