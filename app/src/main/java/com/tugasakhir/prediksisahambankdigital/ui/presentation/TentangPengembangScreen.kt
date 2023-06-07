@@ -50,7 +50,7 @@ fun TentangPengembangScreen(
 
                 DescriptionText(
                     modifier = Modifier,
-                    deskripsi = "Seorang wanita yang memiliki ketertarikan untuk mendalami pemrograman Android. Ia berhasil mendapatkan sertifikat Associate Android Developer pada November 2022, dan ingin terus berkembang lebih lagi. Sebagai Tugas Akhirnya, ia membuat aplikasi Android dinamakan \"PREDIK\" dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto."
+                    deskripsi = "Seorang mahasiswa S1-Teknik Informatika dari Institut Informatika Indonesia Surabaya yang memiliki ketertarikan untuk mendalami pemrograman Android. Ia berhasil mendapatkan sertifikat Associate Android Developer pada November 2022, dan ingin terus berkembang lebih lagi. Sebagai Tugas Akhirnya, ia membuat aplikasi Android dinamakan \"PREDIK\" dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto."
                 )
             }
         }
