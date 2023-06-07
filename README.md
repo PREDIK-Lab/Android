@@ -4,7 +4,7 @@
 
 PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan. Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia.
 
-PREDIK dikembangkan oleh Paulina Graciela Harmanto, dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto.
+PREDIK dikembangkan oleh Paulina Graciela Harmanto, dengan bimbingan dari Timothy John Pattiasina dan Edwin Meinardi Trianto, dan aplikasi ini merupakan tugas akhir setelah menempuh 3,5 tahun pembelajaran S1-Teknik Informatika di Institut Informatika Indonesia Surabaya.
 
 # Spesifikasi PREDIK
 Berikut merupakan ketentuan pengembangan aplikasi PREDIK, dan ponsel yang dibutuhkan untuk dapat menggunakan aplikasi ini.
