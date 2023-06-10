@@ -1,12 +1,9 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -115,7 +112,7 @@ fun PerbandinganPrediksiScreen(
                             hargaPenutupanBesok1 =
                                 if (it.data!!.rmseLSTM <= it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
                             hargaPenutupanBesok2 =
-                                if (it.data.rmseLSTM >= it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
+                                if (it.data!!.rmseLSTM > it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
                         }
                         is Resource.Error -> {
                             isLoading = false
@@ -152,8 +149,8 @@ fun PerbandinganPrediksiScreen(
                         label = null,
                         shape = RoundedCornerShape(20.dp),
                         colors = TextFieldDefaults.textFieldColors(
-                            textColor = Color.Black,
-                            backgroundColor = Color.White,
+                            textColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                            backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
                             disabledTextColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent,

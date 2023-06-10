@@ -1,5 +1,6 @@
 package com.tugasakhir.prediksisahambankdigital.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.usecase.InformasiUseCase
 import com.tugasakhir.prediksisahambankdigital.domain.usecase.PrediksiUseCase
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
 
 class DetailPerbandinganPrediksiViewModel(
     private val prediksiUseCase: PrediksiUseCase,
@@ -45,23 +47,30 @@ class DetailPerbandinganPrediksiViewModel(
             val callGrafik = grafikUseCase.getGrafik(mutableKodeSaham.value)
             val callInformasi = informasiUseCase.getInformasi(mutableKodeSaham.value)
 
-            callPrediksi.zip(callGrafik) { prediksi, grafik ->
-                Pair(prediksi, grafik)
-            }.zip(callInformasi) { pair, informasi ->
-                Pair(pair, informasi)
-            }.collectLatest { pair ->
-                try {
-                    mutablePrediksi.value = Resource.Success(pair.first.first.data!!)
-                    mutableGrafik.value = Resource.Success(pair.first.second.data!!)
-                    mutableInformasi.value = Resource.Success(pair.second.data!!)
-                } catch (ex: Exception) {
-                    mutablePrediksi.value = Resource.Error("")
-                    mutableGrafik.value = Resource.Error("")
-                    mutableInformasi.value = Resource.Error("")
+            val time = measureTimeMillis {
+                callPrediksi.zip(callGrafik) { prediksi, grafik ->
+                    Pair(prediksi, grafik)
+                }.zip(callInformasi) { pair, informasi ->
+                    Pair(pair, informasi)
+                }.distinctUntilChanged().filter {
+                    it !== null
+                }.collectLatest { pair ->
+                    try {
+                        mutablePrediksi.value =
+                            Resource.Success(pair.first.first.data!!)
+                        mutableGrafik.value = Resource.Success(pair.first.second.data!!)
+                        mutableInformasi.value = Resource.Success(pair.second.data!!)
+                    } catch (ex: Exception) {
+                        mutablePrediksi.value = Resource.Error("")
+                        mutableGrafik.value = Resource.Error("")
+                        mutableInformasi.value = Resource.Error("")
 
-                    ex.printStackTrace()
+                        ex.printStackTrace()
+                    }
                 }
             }
+
+            Log.d("async-await", "Time Taken To Complete-> $time ms.")
 
 //            val callPrediksi = async(Dispatchers.IO) { prediksiUseCase.getPrediksi(mutableKodeSaham.value) }
 //            val callGrafik = async(Dispatchers.IO) { grafikUseCase.getGrafik(mutableKodeSaham.value) }

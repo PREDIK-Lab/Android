@@ -1,11 +1,11 @@
 package com.jaikeerthick.composable_graphs.color
 
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-
-
-
-
+@Composable
+fun LineGraphColor() = if(isSystemInDarkTheme()) Color(0xFF7198FD) else Color(0xFF032E9D) //Color(0xFF29CA0E)
 
 val GraphAccent = Color(0xFF9C27B0)
 val GraphAccent2 = Color(0xFF032E9D) //Color(0xFF29CA0E)

@@ -1,6 +1,7 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -34,6 +35,9 @@ fun TentangAplikasiScreen(
         }
     }
 
+    val logo =
+        if (isSystemInDarkTheme()) "https://tugas-akhir.portfoliobypgh.my.id/logo/white_logo.png" else "https://tugas-akhir.portfoliobypgh.my.id/logo/color_logo.png"
+
     Scaffold(
         topBar = { PageTopAppBar(navigateBack, "Tentang Aplikasi") }
     ) {
@@ -47,7 +51,7 @@ fun TentangAplikasiScreen(
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Image(
-                    painter = rememberAsyncImagePainter("https://tugas-akhir.portfoliobypgh.my.id/logo/color_logo.png"),
+                    painter = rememberAsyncImagePainter(logo),
                     contentDescription = null,
                     modifier = Modifier
                         .padding(start = 15.dp, end = 15.dp)
@@ -60,7 +64,7 @@ fun TentangAplikasiScreen(
 
                 DescriptionText(
                     modifier = Modifier,
-                    deskripsi = "PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan. Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia."
+                    deskripsi = "PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan. Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia.\n\nSumber data saham yang digunakan berasal dari web finance.yahoo.com."
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))

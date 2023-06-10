@@ -66,8 +66,8 @@ fun PerbandinganPrediksiBox(
                     Spacer(modifier = Modifier.weight(1f))
 
                     Image(
-                        painter = painterResource(perbandinganPrediksiItem.gambarKeterangan),
-                        contentDescription = "Up",
+                        painter = painterResource(it.gambarKeterangan),
+                        contentDescription = "-",
                         modifier = Modifier
                             .size(50.dp)
                             .padding(end = 15.dp),

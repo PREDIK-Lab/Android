@@ -2,6 +2,7 @@ package com.tugasakhir.prediksisahambankdigital.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -46,7 +47,7 @@ fun InformasiAplikasiList(
 
                 Divider(
                     modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                    color = LightGrey2
+                    color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
                 )
             }
         }
@@ -84,7 +85,7 @@ fun InformasiAplikasiList(
 
                     Divider(
                         modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                        color = LightGrey2
+                        color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
                     )
                 }
             }
@@ -206,7 +207,7 @@ fun PrediksiSahamList(
 
                 Divider(
                     modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                    color = LightGrey2
+                    color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
                 )
             }
         }

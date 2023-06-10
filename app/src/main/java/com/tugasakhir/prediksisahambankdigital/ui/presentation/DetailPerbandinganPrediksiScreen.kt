@@ -569,7 +569,7 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
             isCrossHairVisible = true
         ),
         colors = LinearGraphColors(
-            lineColor = GraphAccent2,
+            lineColor = LineGraphColor(),
             pointColor = Color.Transparent,
             clickHighlightColor = PointHighlight2,
             fillGradient = Brush.verticalGradient(
@@ -643,7 +643,7 @@ fun DetailPerbandinganPrediksiGrafikHistoriSaham(
             isCrossHairVisible = true
         ),
         colors = LinearGraphColors(
-            lineColor = GraphAccent2,
+            lineColor = LineGraphColor(),
             pointColor = Color.Transparent,
             clickHighlightColor = PointHighlight2,
             fillGradient = Brush.verticalGradient(
