@@ -2,5 +2,6 @@
 <resources>
     <style name="Theme.PrediksiSahamBankDigital" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/light_blue_1</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 </resources>

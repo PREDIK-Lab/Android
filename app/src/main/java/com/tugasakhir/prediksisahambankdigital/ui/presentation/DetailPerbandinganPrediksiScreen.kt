@@ -90,6 +90,7 @@ fun DetailPerbandinganPrediksiScreen(
     var hargaSahamSaatIni: Float by rememberSaveable { mutableStateOf(0.0F) }
     var tanggalPrediksiList: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
     var tanggalPrediksiListRaw: List<GraphData>? by rememberSaveable { mutableStateOf(emptyList()) }
+    var hargaPenutupanPrediksiList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
 
     var prediksiLSTMList: List<DetailPrediksi>? by rememberSaveable { mutableStateOf(emptyList()) }
     var hargaPenutupanPrediksiLSTMList: List<Float>? by rememberSaveable { mutableStateOf(emptyList()) }
@@ -109,6 +110,12 @@ fun DetailPerbandinganPrediksiScreen(
     }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
 
+    val opsiPrediksi = mapOf(
+        "LSTM" to 7,
+        "GRU" to 7
+    )
+    val opsiListPrediksi = opsiPrediksi.toList()
+    var selectedOpsiPrediksi by rememberSaveable { mutableStateOf(opsiListPrediksi[0]) }
     val clickedPrediksiPoin: MutableState<Pair<Any, Any>?> =
         rememberSaveable { mutableStateOf(null) }
     val clickedPrediksiOffset: MutableState<Offset?> = remember { mutableStateOf(null) }
@@ -122,7 +129,7 @@ fun DetailPerbandinganPrediksiScreen(
                 "",
                 "",
                 0,
-                "4"
+                ""
             )
         )
     }
@@ -130,7 +137,7 @@ fun DetailPerbandinganPrediksiScreen(
     var isLoading: Boolean? by rememberSaveable { mutableStateOf(null) }
     var isError: Boolean? by rememberSaveable { mutableStateOf(null) }
 
-    val opsi = mapOf(
+    val opsiHistori = mapOf(
         "15D" to 15,
         "1M" to 30,
         "3M" to 90,
@@ -138,8 +145,8 @@ fun DetailPerbandinganPrediksiScreen(
         "3Y" to 1095,
         "Max" to 0
     )
-    val opsiList = opsi.toList()
-    var selectedOpsi by rememberSaveable { mutableStateOf(opsiList[5]) }
+    val opsiListHistori = opsiHistori.toList()
+    var selectedOpsiHistori by rememberSaveable { mutableStateOf(opsiListHistori[5]) }
     val clickedHistoriPoin: MutableState<Pair<Any, Any>?> =
         rememberSaveable { mutableStateOf(null) }
     val clickedHistoriOffset: MutableState<Offset?> = remember { mutableStateOf(null) }
@@ -183,10 +190,10 @@ fun DetailPerbandinganPrediksiScreen(
                                     .toTypedArray()
                                     .toList()
                             val hargaPenutupanLSTM =
-                                prediksiLSTMList!!.map { it.prediksiHargaPenutupan }
+                                prediksiLSTMList!!.map { roundDecimal(it.prediksiHargaPenutupan) }
                                     .toTypedArray().toList()
                             val hargaPenutupanGRU =
-                                prediksiGRUList!!.map { it.prediksiHargaPenutupan }
+                                prediksiGRUList!!.map { roundDecimal(it.prediksiHargaPenutupan) }
                                     .toTypedArray().toList()
 
                             tanggalPrediksiList = tanggal.map { list ->
@@ -200,6 +207,8 @@ fun DetailPerbandinganPrediksiScreen(
                             hargaPenutupanPrediksiLSTMListRaw = hargaPenutupanLSTM
                             hargaPenutupanPrediksiGRUList = hargaPenutupanGRU
                             hargaPenutupanPrediksiGRUListRaw = hargaPenutupanGRU
+
+                            hargaPenutupanPrediksiList = hargaPenutupanLSTM
                         }
                         is Resource.Error -> {
                             isLoading = false
@@ -271,26 +280,6 @@ fun DetailPerbandinganPrediksiScreen(
                 }
             }
         }
-
-//    for (i in prediksiGRUList!!.indices) {
-//        var gambarKeterangan = 1
-//
-//        if (i > 0) {
-//            gambarKeterangan =
-//                if (prediksiLSTMList!![i].prediksiHargaPenutupan >= prediksiLSTMList!![i - 1].prediksiHargaPenutupan) 1 else 0
-//        } else {
-//            if (prediksiLSTMList!![i].prediksiHargaPenutupan >= hargaSahamSaatIni) 1 else 0
-//        }
-//    }
-//
-//    for (i in prediksiGRUList!!.indices) {
-//        var gambarKeterangan = 1
-//
-//        if (i > 0) {
-//            gambarKeterangan =
-//                if (prediksiGRUList!![i].prediksiHargaPenutupan >= hargaSahamSaatIni) 1 else 0
-//        }
-//    }
 
         Scaffold(
             topBar = { PageTopAppBar(navigateBack, key) }
@@ -436,7 +425,7 @@ fun DetailPerbandinganPrediksiScreen(
                             shape = RoundedCornerShape(20.dp)
                         ) {
                             PrediksiSahamList(
-                                hargaSahamSaatIni = roundDecimal(hargaSahamSaatIni),
+                                hargaSahamSaatIni = hargaSahamSaatIni,
                                 list = if (rmseLSTM!! <= rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
                             )
                         }
@@ -450,7 +439,7 @@ fun DetailPerbandinganPrediksiScreen(
                             shape = RoundedCornerShape(20.dp)
                         ) {
                             PrediksiSahamList(
-                                hargaSahamSaatIni = roundDecimal(hargaSahamSaatIni),
+                                hargaSahamSaatIni = hargaSahamSaatIni,
                                 list = if (rmseLSTM!! > rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
                             )
                         }
@@ -465,14 +454,42 @@ fun DetailPerbandinganPrediksiScreen(
                         DetailPerbandinganPrediksiGrafikPrediksiSaham(
                             Modifier,
                             tanggalPrediksiList!!,
-                            hargaPenutupanPrediksiLSTMList!!,
-                            hargaPenutupanPrediksiGRUList!!,
+                            hargaPenutupanPrediksiList!!,
+                            listOf(hargaPenutupanPrediksiLSTMList!!, hargaPenutupanPrediksiGRUList!!),
                             0,
+                            selectedOpsiPrediksi.first,
                             clickedPrediksiPoin,
                             clickedPrediksiOffset,
                         )
+
+                        Spacer(modifier = Modifier.height(15.dp))
+
+                        MultiSelector(
+                            options = opsiPrediksi,
+                            optionsKey = opsiListPrediksi.map { it.first }.toTypedArray().toList(),
+                            selectedOption = selectedOpsiPrediksi,
+                            onOptionSelect = { opsi ->
+                                selectedOpsiPrediksi = opsi
+                                clickedPrediksiPoin.value = null
+                                clickedPrediksiOffset.value = null
+                                tanggalPrediksiList =
+                                    if (selectedOpsiPrediksi.second > 0) tanggalPrediksiListRaw!!.takeLast(
+                                        selectedOpsiPrediksi.second
+                                    ) else tanggalPrediksiListRaw
+                                hargaPenutupanPrediksiList =
+                                    if (selectedOpsiPrediksi.first === "LSTM") hargaPenutupanPrediksiLSTMList!!.takeLast(
+                                        selectedOpsiPrediksi.second
+                                    ) else hargaPenutupanPrediksiGRUList!!.takeLast(
+                                        selectedOpsiPrediksi.second
+                                    )
+                            },
+                            modifier = Modifier
+                                .padding(all = 16.dp)
+                                .fillMaxWidth()
+                                .height(56.dp)
+                        )
                     } else {
-                        DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(Modifier)
+                        DetailPerbandinganPrediksiGrafikPrediksiSahamShimmer(Modifier)
                     }
 
                     Spacer(modifier = Modifier.height(50.dp))
@@ -485,7 +502,7 @@ fun DetailPerbandinganPrediksiScreen(
                             Modifier,
                             tanggalHistoriList!!,
                             hargaPenutupanHistoriList!!,
-                            selectedOpsi.second,
+                            selectedOpsiHistori.second,
                             clickedHistoriPoin,
                             clickedHistoriOffset
                         )
@@ -493,20 +510,20 @@ fun DetailPerbandinganPrediksiScreen(
                         Spacer(modifier = Modifier.height(15.dp))
 
                         MultiSelector(
-                            options = opsi,
-                            optionsKey = opsiList.map { it.first }.toTypedArray().toList(),
-                            selectedOption = selectedOpsi,
+                            options = opsiHistori,
+                            optionsKey = opsiListHistori.map { it.first }.toTypedArray().toList(),
+                            selectedOption = selectedOpsiHistori,
                             onOptionSelect = { opsi ->
-                                selectedOpsi = opsi
+                                selectedOpsiHistori = opsi
                                 clickedHistoriPoin.value = null
                                 clickedHistoriOffset.value = null
                                 tanggalHistoriList =
-                                    if (selectedOpsi.second > 0) tanggalHistoriListRaw!!.takeLast(
-                                        selectedOpsi.second
+                                    if (selectedOpsiHistori.second > 0) tanggalHistoriListRaw!!.takeLast(
+                                        selectedOpsiHistori.second
                                     ) else tanggalHistoriListRaw
                                 hargaPenutupanHistoriList =
-                                    if (selectedOpsi.second > 0) hargaPenutupanHistoriListRaw!!.takeLast(
-                                        selectedOpsi.second
+                                    if (selectedOpsiHistori.second > 0) hargaPenutupanHistoriListRaw!!.takeLast(
+                                        selectedOpsiHistori.second
                                     ) else hargaPenutupanHistoriListRaw
                             },
                             modifier = Modifier
@@ -546,9 +563,10 @@ fun DetailPerbandinganPrediksiScreen(
 fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
     modifier: Modifier,
     tanggalList: List<GraphData>,
-    hargaPenutupanPrediksiLSTMList: List<Float>,
-    hargaPenutupanPrediksiGRUList: List<Float>,
+    hargaPenutupanPrediksiList: List<Float>,
+    hargaPenutupanPrediksiListList: List<List<Float>>,
     index: Int,
+    selectedOpsi: String,
     clickedPoin: MutableState<Pair<Any, Any>?>,
     clickedOffset: MutableState<Offset?>
 ) {
@@ -569,7 +587,7 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
             isCrossHairVisible = true
         ),
         colors = LinearGraphColors(
-            lineColor = LineGraphColor(),
+            lineColor = LineGraphColor1(),
             pointColor = Color.Transparent,
             clickHighlightColor = PointHighlight2,
             fillGradient = Brush.verticalGradient(
@@ -590,8 +608,8 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
         Text(
             modifier = Modifier
                 .padding(15.dp),
-            text = clickedPoin.value?.let { "(x, y): (${it.first}, ${it.second})" }
-                ?: "Klik poin pada grafik untuk melihat nilai (x, y).",
+            text = clickedPoin.value?.let { "(tanggal, harga penutupan): (${it.first}, ${it.second})" }
+                ?: "Klik poin pada grafik untuk melihat nilai (tanggal, harga penutupan).",
             fontSize = 15.sp,
             lineHeight = 23.sp,
             letterSpacing = 0.sp,
@@ -607,9 +625,11 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
      */
     MultipleLineGraph(
         xAxisData = tanggalList,
-        yAxisData = listOf(hargaPenutupanPrediksiLSTMList, hargaPenutupanPrediksiGRUList),
+        yAxisData = hargaPenutupanPrediksiList,
+        yAxisDataList = hargaPenutupanPrediksiListList,
         style = lineGraphStyle,
         index = if (index > 0) index else 0,
+        selectedOpsi = selectedOpsi,
         onPointClicked = {
             clickedPoin.value = it
         },
@@ -643,7 +663,7 @@ fun DetailPerbandinganPrediksiGrafikHistoriSaham(
             isCrossHairVisible = true
         ),
         colors = LinearGraphColors(
-            lineColor = LineGraphColor(),
+            lineColor = LineGraphColor1(),
             pointColor = Color.Transparent,
             clickHighlightColor = PointHighlight2,
             fillGradient = Brush.verticalGradient(
@@ -664,8 +684,8 @@ fun DetailPerbandinganPrediksiGrafikHistoriSaham(
         Text(
             modifier = Modifier
                 .padding(15.dp),
-            text = clickedPoin.value?.let { "(x, y): (${it.first}, ${it.second})" }
-                ?: "Klik poin pada grafik untuk melihat nilai (x, y).",
+            text = clickedPoin.value?.let { "(tanggal, harga penutupan): (${it.first}, ${it.second})" }
+                ?: "Klik poin pada grafik untuk melihat nilai (tanggal, harga penutupan).",
             fontSize = 15.sp,
             lineHeight = 23.sp,
             letterSpacing = 0.sp,
@@ -738,7 +758,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
         ) {
             Image(
                 painterResource(id = R.drawable.baseline_category_24),
-                contentDescription = null,
+                contentDescription = "Industri (Sektor)",
                 modifier = Modifier
                     .size(40.dp)
             )
@@ -763,7 +783,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
         ) {
             Image(
                 painterResource(id = R.drawable.baseline_location_on_24),
-                contentDescription = null,
+                contentDescription = "Alamat",
                 modifier = Modifier
                     .size(40.dp)
             )
@@ -788,7 +808,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
         ) {
             Image(
                 painterResource(id = R.drawable.baseline_person_24),
-                contentDescription = null,
+                contentDescription = "Jumlah Pegawai",
                 modifier = Modifier
                     .size(40.dp)
             )
@@ -796,7 +816,7 @@ fun DetailPerbandinganPrediksiTentangSaham(
             Spacer(modifier = Modifier.width(15.dp))
 
             Text(
-                text = "${informasiSaham.jumlahPegawai} orang",
+                text = "${informasiSaham.jumlahPegawai} pegawai",
                 fontSize = 15.sp,
                 lineHeight = 28.sp,
                 letterSpacing = 0.sp

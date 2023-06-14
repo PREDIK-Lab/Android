@@ -1,6 +1,7 @@
 package com.jaikeerthick.composable_graphs.composables
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
