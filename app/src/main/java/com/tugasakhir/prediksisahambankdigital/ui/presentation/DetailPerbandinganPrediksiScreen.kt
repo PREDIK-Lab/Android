@@ -1,6 +1,5 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
-//import androidx.compose.ui.geometry.Offset
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -69,7 +68,6 @@ fun DetailPerbandinganPrediksiScreen(
             viewModelStoreOwner,
             factory
         )[DetailPerbandinganPrediksiViewModel::class.java]
-    val isDropdownExpanded by rememberSaveable { mutableStateOf(false) }
 
     val sahamList = listOf(
         SahamItem("BBYB.JK", "Bank Neo Commerce", "bankneocommerce.co.id"),
@@ -455,9 +453,7 @@ fun DetailPerbandinganPrediksiScreen(
                             Modifier,
                             tanggalPrediksiList!!,
                             hargaPenutupanPrediksiList!!,
-                            listOf(hargaPenutupanPrediksiLSTMList!!, hargaPenutupanPrediksiGRUList!!),
                             0,
-                            selectedOpsiPrediksi.first,
                             clickedPrediksiPoin,
                             clickedPrediksiOffset,
                         )
@@ -564,13 +560,11 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
     modifier: Modifier,
     tanggalList: List<GraphData>,
     hargaPenutupanPrediksiList: List<Float>,
-    hargaPenutupanPrediksiListList: List<List<Float>>,
     index: Int,
-    selectedOpsi: String,
     clickedPoin: MutableState<Pair<Any, Any>?>,
     clickedOffset: MutableState<Offset?>
 ) {
-    SubTitleText(modifier = modifier, judul = "Grafik Prediksi Saham")
+    TitleText(modifier = modifier, judul = "Grafik Prediksi Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 
@@ -626,10 +620,8 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
     MultipleLineGraph(
         xAxisData = tanggalList,
         yAxisData = hargaPenutupanPrediksiList,
-        yAxisDataList = hargaPenutupanPrediksiListList,
         style = lineGraphStyle,
         index = if (index > 0) index else 0,
-        selectedOpsi = selectedOpsi,
         onPointClicked = {
             clickedPoin.value = it
         },
@@ -646,7 +638,7 @@ fun DetailPerbandinganPrediksiGrafikHistoriSaham(
     clickedPoin: MutableState<Pair<Any, Any>?>,
     clickedOffset: MutableState<Offset?>,
 ) {
-    SubTitleText(modifier = modifier, judul = "Grafik Histori Saham")
+    TitleText(modifier = modifier, judul = "Grafik Histori Saham")
 
     Spacer(modifier = modifier.height(30.dp))
 

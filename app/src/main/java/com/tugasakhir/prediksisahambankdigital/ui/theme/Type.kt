@@ -51,26 +51,28 @@ private fun getGoogleFontFamily(
     )
 }
 
-val AppFontTypography = Typography(
-    defaultFontFamily = getGoogleFontFamily(
-        name = "Inter",
-        weights = listOf(
-            FontWeight.Normal,
-            FontWeight.Bold,
-            FontWeight.ExtraLight,
-            FontWeight.SemiBold,
-            FontWeight.Bold,
-            FontWeight.ExtraBold,
-            FontWeight.Black,
-            FontWeight.W100,
-            FontWeight.W200,
-            FontWeight.W300,
-            FontWeight.W400,
-            FontWeight.W500,
-            FontWeight.W600,
-            FontWeight.W700,
-            FontWeight.W800,
-            FontWeight.W900
-        )
+val defaultFontFamily = getGoogleFontFamily(
+    name = "Inter",
+    weights = listOf(
+        FontWeight.Normal,
+        FontWeight.Bold,
+        FontWeight.ExtraLight,
+        FontWeight.SemiBold,
+        FontWeight.Bold,
+        FontWeight.ExtraBold,
+        FontWeight.Black,
+        FontWeight.W100,
+        FontWeight.W200,
+        FontWeight.W300,
+        FontWeight.W400,
+        FontWeight.W500,
+        FontWeight.W600,
+        FontWeight.W700,
+        FontWeight.W800,
+        FontWeight.W900
     )
+)
+
+val AppFontTypography = Typography(
+    defaultFontFamily = defaultFontFamily
 )

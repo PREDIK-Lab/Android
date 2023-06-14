@@ -38,17 +38,18 @@ fun InformasiAplikasiList(
         shape = RoundedCornerShape(20.dp)
     ) {
         Column {
-            (list).forEach {
+            (list).forEachIndexed { index, it ->
                 InformasiAplikasiListItem(
                     modifier = modifier,
                     item = it,
                     onItemClick = onItemClick
                 )
 
-                Divider(
-                    modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                    color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
-                )
+                if (index != list.size - 1)
+                    Divider(
+                        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+                        color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
+                    )
             }
         }
     }
@@ -165,7 +166,7 @@ fun PrediksiSahamList(
     val listState = rememberLazyListState()
 
     LazyColumn(state = listState) {
-        itemsIndexed(list) { _, item ->
+        itemsIndexed(list) { index, item ->
             Column {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
@@ -205,10 +206,11 @@ fun PrediksiSahamList(
 //                    )
                 }
 
-                Divider(
-                    modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                    color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
-                )
+                if (index != list.size - 1)
+                    Divider(
+                        modifier = modifier.padding(start = 15.dp, end = 15.dp),
+                        color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
+                    )
             }
         }
     }

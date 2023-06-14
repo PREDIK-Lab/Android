@@ -1,7 +1,6 @@
 package com.jaikeerthick.composable_graphs.composables
 
 import android.graphics.Paint
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -25,32 +24,22 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-// k
-
 @Composable
 fun MultipleLineGraph(
     xAxisData: List<GraphData>,
     yAxisData: List<Number>,
-    yAxisDataList: List<List<Number>>,
     header: @Composable () -> Unit = {},
     style: LineGraphStyle = LineGraphStyle(),
     onPointClicked: (pair: Pair<Any, Any>) -> Unit = {},
     index: Int,
-    selectedOpsi: String,
     clickedOffset: MutableState<Offset?>
 ) {
-    val opsi = selectedOpsi
-
     val yAxisPadding: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
     val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
     val offsetList = rememberSaveable { mutableListOf<Offset>() }
     val isPointClicked = rememberSaveable { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = clickedOffset //remember { mutableStateOf(null) }
-
-    val onClickPoint: () -> Unit = {
-
-    }
 
     Column(
         modifier = Modifier
@@ -73,7 +62,7 @@ fun MultipleLineGraph(
                 .fillMaxWidth()
                 .height(style.height)
                 .padding(end = 15.dp)
-                .pointerInput(selectedOpsi) {
+                .pointerInput(yAxisData) {
                     detectTapGestures(onTap = { p1: Offset ->
 
                         val shortest = offsetList.find { p2: Offset ->
@@ -106,9 +95,9 @@ fun MultipleLineGraph(
                                     offsetList.size
                                 ) else xAxisData
                             val yData =
-                                if (opsi === "LSTM") yAxisDataList[0] else yAxisDataList[1]
-
-                            Log.d("kannm", selectedOpsi)
+                                if (offsetList.size < yAxisData.size) yAxisData.takeLast(
+                                    offsetList.size
+                                ) else yAxisData
 
                             onPointClicked(
                                 Pair(

@@ -32,6 +32,7 @@ import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksi
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.defaultFontFamily
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModel
@@ -135,7 +136,7 @@ fun PerbandinganPrediksiScreen(
                 Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
                     // Create an Outlined Text Field with icon and not expanded
                     TextField(
-                        textStyle = TextStyle(letterSpacing = 0.sp),
+                        textStyle = TextStyle(letterSpacing = 0.sp, fontFamily = defaultFontFamily),
                         value = "$dropdownSelectedNamaSaham (${dropdownSelectedKodeSaham})",
                         onValueChange = { dropdownSelectedKodeSaham = it },
                         readOnly = true,
@@ -258,6 +259,7 @@ fun PerbandinganPrediksiScreen(
                         text = AnnotatedString("Selengkapnya..."),
                         style = TextStyle(
                             fontSize = 15.sp,
+                            fontFamily = defaultFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colors.primary,
                             letterSpacing = 0.sp
