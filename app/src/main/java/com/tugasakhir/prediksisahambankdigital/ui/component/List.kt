@@ -77,17 +77,18 @@ fun InformasiAplikasiList(
             shape = RoundedCornerShape(20.dp)
         ) {
             Column {
-                (it.second).forEach {
+                (it.second).forEachIndexed { index, item ->
                     InformasiAplikasiListItem(
                         modifier = modifier,
-                        item = it,
+                        item = item,
                         onItemClick = onItemClick
                     )
 
-                    Divider(
-                        modifier = modifier.padding(start = 15.dp, end = 15.dp),
-                        color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
-                    )
+                    if (index != it.second.size - 1)
+                        Divider(
+                            modifier = modifier.padding(start = 15.dp, end = 15.dp),
+                            color = if (isSystemInDarkTheme()) DarkGrey1 else LightGrey2
+                        )
                 }
             }
         }

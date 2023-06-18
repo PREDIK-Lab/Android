@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -37,8 +38,8 @@ fun MultipleLineGraph(
     val yAxisPadding: Dp = if (style.visibility.isYAxisLabelVisible) 20.dp else 0.dp
     val paddingBottom: Dp = if (style.visibility.isXAxisLabelVisible) 20.dp else 0.dp
 
-    val offsetList = rememberSaveable { mutableListOf<Offset>() }
-    val isPointClicked = rememberSaveable { mutableStateOf(false) }
+    val offsetList = remember { mutableListOf<Offset>() }
+    val isPointClicked = remember { mutableStateOf(false) }
     val clickedPoint: MutableState<Offset?> = clickedOffset //remember { mutableStateOf(null) }
 
     Column(

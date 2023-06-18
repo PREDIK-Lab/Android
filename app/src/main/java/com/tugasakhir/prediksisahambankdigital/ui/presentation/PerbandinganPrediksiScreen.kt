@@ -62,6 +62,7 @@ fun PerbandinganPrediksiScreen(
     var dropdownSelectedUrlSaham by rememberSaveable { mutableStateOf(sahamList[0].url) }
 
     var key by rememberSaveable { mutableStateOf(sahamList[0].kode) }
+    var keyRaw by rememberSaveable { mutableStateOf(sahamList[0].kode) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
     // Ikon "up" muncul ketika di-expand, namun ikon "down" muncul saat collapse
@@ -113,7 +114,7 @@ fun PerbandinganPrediksiScreen(
                             hargaPenutupanBesok1 =
                                 if (it.data!!.rmseLSTM <= it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
                             hargaPenutupanBesok2 =
-                                if (it.data!!.rmseLSTM > it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
+                                if (it.data.rmseLSTM > it.data.rmseGRU) it.data.prediksiLSTM[0].prediksiHargaPenutupan else it.data.prediksiGRU[0].prediksiHargaPenutupan
                         }
                         is Resource.Error -> {
                             isLoading = false
@@ -125,166 +126,179 @@ fun PerbandinganPrediksiScreen(
             }
         }
 
-        Surface(modifier = modifier.verticalScroll(rememberScrollState())) {
-            Column {
-                Spacer(modifier = modifier.height(50.dp))
+        if (isError == null || isError == false) {
+            Surface(modifier = modifier.verticalScroll(rememberScrollState())) {
+                Column {
+                    Spacer(modifier = modifier.height(50.dp))
 
-                TitleText(modifier = modifier, judul = "Perbandingan Prediksi")
+                    TitleText(modifier = modifier, judul = "Perbandingan Prediksi")
 
-                Spacer(modifier = modifier.height(50.dp))
+                    Spacer(modifier = modifier.height(50.dp))
 
-                Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
-                    // Create an Outlined Text Field with icon and not expanded
-                    TextField(
-                        textStyle = TextStyle(letterSpacing = 0.sp, fontFamily = defaultFontFamily),
-                        value = "$dropdownSelectedNamaSaham (${dropdownSelectedKodeSaham})",
-                        onValueChange = { dropdownSelectedKodeSaham = it },
-                        readOnly = true,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .onGloballyPositioned { coordinates ->
-                                // This value is used to assign to the DropDown the same width
-                                textFieldSize = coordinates.size.toSize()
-                            },
-                        singleLine = true,
-                        label = null,
-                        shape = RoundedCornerShape(20.dp),
-                        colors = TextFieldDefaults.textFieldColors(
-                            textColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
-                            backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
-                            disabledTextColor = Color.Transparent,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent
-                        ),
-                        trailingIcon = {
-                            Icon(icon, "contentDescription",
-                                Modifier.clickable { isDropdownExpanded = !isDropdownExpanded })
-                        }
-                    )
+                    Column(modifier = Modifier.padding(start = 15.dp, end = 15.dp)) {
+                        // Create an Outlined Text Field with icon and not expanded
+                        TextField(
+                            textStyle = TextStyle(
+                                letterSpacing = 0.sp,
+                                fontFamily = defaultFontFamily
+                            ),
+                            value = "$dropdownSelectedNamaSaham (${dropdownSelectedKodeSaham})",
+                            onValueChange = { dropdownSelectedKodeSaham = it },
+                            readOnly = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onGloballyPositioned { coordinates ->
+                                    // This value is used to assign to the DropDown the same width
+                                    textFieldSize = coordinates.size.toSize()
+                                },
+                            singleLine = true,
+                            label = null,
+                            shape = RoundedCornerShape(20.dp),
+                            colors = TextFieldDefaults.textFieldColors(
+                                textColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                                backgroundColor = if (isSystemInDarkTheme()) Color.Black else Color.White,
+                                disabledTextColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent
+                            ),
+                            trailingIcon = {
+                                Icon(icon, "contentDescription",
+                                    Modifier.clickable { isDropdownExpanded = !isDropdownExpanded })
+                            }
+                        )
 
-                    DropdownMenu(
-                        expanded = isDropdownExpanded,
-                        onDismissRequest = { isDropdownExpanded = false },
-                        modifier = modifier
-                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                    ) {
-                        sahamList.forEach { label ->
-                            DropdownMenuItem(onClick = {
-                                dropdownSelectedKodeSaham = label.kode
-                                dropdownSelectedNamaSaham = label.nama
-                                dropdownSelectedUrlSaham = label.url
+                        DropdownMenu(
+                            expanded = isDropdownExpanded,
+                            onDismissRequest = { isDropdownExpanded = false },
+                            modifier = modifier
+                                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        ) {
+                            sahamList.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    dropdownSelectedKodeSaham = label.kode
+                                    dropdownSelectedNamaSaham = label.nama
+                                    dropdownSelectedUrlSaham = label.url
 
-                                isDropdownExpanded = false
-                            }) {
-                                Text(
-                                    text = "${label.nama} (${label.kode})",
-                                    style = TextStyle(letterSpacing = 0.sp)
-                                )
+                                    isDropdownExpanded = false
+                                }) {
+                                    Text(
+                                        text = "${label.nama} (${label.kode})",
+                                        style = TextStyle(letterSpacing = 0.sp)
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                Spacer(modifier = modifier.height(30.dp))
+                    Spacer(modifier = modifier.height(30.dp))
 
-                ButtonText(modifier = Modifier, onClick = {
-                    perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
+                    ButtonText(modifier = Modifier.padding(start = 15.dp, end = 15.dp), onClick = {
+                        perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
 
-                    key = dropdownSelectedKodeSaham
-                }, judul = "Prediksi")
+                        key = dropdownSelectedKodeSaham
+                        keyRaw = key
 
-                Spacer(modifier = modifier.height(50.dp))
+                    }, judul = "Prediksi")
 
-                Row(
-                    modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
-                ) {
-                    if (isLoading == false && isError == false) {
-                        PerbandinganPrediksiBox(
-                            modifier
-                                .weight(1f)
-                                .height(390.dp)
-                                .wrapContentHeight(),
-                            PerbandinganPrediksiItem(
-                                judul = "Harga penutupan saham hari ini",
-                                hargaPenutupan = roundDecimal(hargaPenutupanSaatIni!!),
-                                gambarKeterangan = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
-                            )
-                        )
-                    } else {
-                        PerbandinganPrediksiBoxShimmer(
-                            modifier
-                                .weight(1f)
-                                .height(390.dp)
-                                .wrapContentHeight()
-                        )
-                    }
+                    Spacer(modifier = modifier.height(50.dp))
 
-                    Spacer(Modifier.weight(0.1f))
-
-                    if (isLoading == false && isError == false) {
-
-                        PerbandinganPrediksiBox(
-                            modifier
-                                .weight(1f)
-                                .height(390.dp)
-                                .wrapContentHeight(),
-                            PerbandinganPrediksiItem(
-                                judul = "Prediksi harga penutupan berikutnya",
-                                deskripsi = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
-                                hargaPenutupan = roundDecimal(hargaPenutupanBesok1!!),
-                                gambarKeterangan = if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
-                            ),
-                            PerbandinganPrediksiItem(
-                                judul = "Prediksi harga penutupan berikutnya",
-                                deskripsi = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
-                                hargaPenutupan = roundDecimal(hargaPenutupanBesok2!!),
-                                gambarKeterangan = if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
-                            )
-                        )
-                    } else {
-                        PerbandinganPrediksiBoxShimmer(
-                            modifier
-                                .weight(1f)
-                                .height(390.dp)
-                                .wrapContentHeight()
-                        )
-                    }
-                }
-
-                if (isLoading == false && isError == false) {
-                    ClickableText(
+                    Row(
                         modifier = Modifier.padding(start = 15.dp, end = 15.dp),
-                        text = AnnotatedString("Selengkapnya..."),
-                        style = TextStyle(
-                            fontSize = 15.sp,
-                            fontFamily = defaultFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colors.primary,
-                            letterSpacing = 0.sp
-                        ),
-                        onClick = {
-                            navigateToDetailPerbandinganPrediksi(key)
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        if (isLoading == false && isError == false) {
+                            PerbandinganPrediksiBox(
+                                modifier
+                                    .weight(1f)
+                                    .height(390.dp)
+                                    .wrapContentHeight(),
+                                PerbandinganPrediksiItem(
+                                    judul = "Harga penutupan saham hari ini",
+                                    hargaPenutupan = roundDecimal(hargaPenutupanSaatIni!!),
+                                    gambarKeterangan = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
+                                )
+                            )
+                        } else {
+                            PerbandinganPrediksiBoxShimmer(
+                                modifier
+                                    .weight(1f)
+                                    .height(390.dp)
+                                    .wrapContentHeight()
+                            )
                         }
-                    )
-                } else {
-                    Spacer(modifier = modifier.height(15.dp))
 
-                    Box(
-                        modifier = Modifier
-                            .padding(start = 15.dp, end = 15.dp)
-                            .shimmer()
-                            .width(100.dp)
-                            .height(15.dp)
-                            .background(Color.Gray)
-                    )
+                        Spacer(Modifier.weight(0.1f))
+
+                        if (isLoading == false && isError == false) {
+
+                            PerbandinganPrediksiBox(
+                                modifier
+                                    .weight(1f)
+                                    .height(390.dp)
+                                    .wrapContentHeight(),
+                                PerbandinganPrediksiItem(
+                                    judul = "Prediksi harga penutupan berikutnya",
+                                    deskripsi = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
+                                    hargaPenutupan = roundDecimal(hargaPenutupanBesok1!!),
+                                    gambarKeterangan = if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                ),
+                                PerbandinganPrediksiItem(
+                                    judul = "Prediksi harga penutupan berikutnya",
+                                    deskripsi = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
+                                    hargaPenutupan = roundDecimal(hargaPenutupanBesok2!!),
+                                    gambarKeterangan = if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                )
+                            )
+                        } else {
+                            PerbandinganPrediksiBoxShimmer(
+                                modifier
+                                    .weight(1f)
+                                    .height(390.dp)
+                                    .wrapContentHeight()
+                            )
+                        }
+                    }
+
+                    if (isLoading == false && isError == false) {
+                        ClickableText(
+                            modifier = Modifier.padding(start = 15.dp, end = 15.dp),
+                            text = AnnotatedString("Selengkapnya..."),
+                            style = TextStyle(
+                                fontSize = 15.sp,
+                                fontFamily = defaultFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colors.primary,
+                                letterSpacing = 0.sp
+                            ),
+                            onClick = {
+                                navigateToDetailPerbandinganPrediksi(keyRaw)
+                            }
+                        )
+                    } else {
+                        Spacer(modifier = modifier.height(15.dp))
+
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 15.dp, end = 15.dp)
+                                .shimmer()
+                                .width(100.dp)
+                                .height(15.dp)
+                                .background(Color.Gray)
+                        )
+                    }
+
+                    Spacer(modifier = modifier.height(50.dp))
                 }
-
-                Spacer(modifier = modifier.height(50.dp))
             }
+        } else {
+            key = "_"
+
+            ErrorScreen(modifier = Modifier, onClick = {
+                key = dropdownSelectedKodeSaham
+            })
         }
     } else {
-        ErrorScreen(modifier)
+        OfflineScreen(modifier)
     }
 }

@@ -13,9 +13,53 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tugasakhir.prediksisahambankdigital.R
+import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
 
 @Composable
-fun ErrorScreen(modifier: Modifier) {
+fun ErrorScreen(modifier: Modifier, onClick: () -> Unit) {
+    Surface {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(15.dp), contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painterResource(id = R.drawable.baseline_error_outline_24),
+                    modifier = Modifier.size(130.dp),
+                    contentDescription = null
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Text(
+                    text = "Maaf, data tidak bisa dimuat...",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 0.sp
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Text(
+                    text = "Coba muat ulang halaman ini dengan menekan tombol \"Muat ulang\".",
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 23.sp,
+                    letterSpacing = 0.sp
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                ButtonText(modifier = Modifier, onClick = onClick, judul = "Muat ulang")
+            }
+        }
+    }
+}
+
+@Composable
+fun OfflineScreen(modifier: Modifier) {
     Surface {
         Box(
             modifier = modifier

@@ -131,7 +131,6 @@ fun ButtonText(modifier: Modifier, onClick: () -> Unit, judul: String) {
         shape = RoundedCornerShape(20.dp),
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 15.dp, end = 15.dp)
             .height(50.dp),
         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
     ) {

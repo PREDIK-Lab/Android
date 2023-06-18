@@ -1,5 +1,6 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -44,7 +45,6 @@ import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkGrey1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
@@ -75,7 +75,8 @@ fun DetailPerbandinganPrediksiScreen(
         SahamItem("BBHI.JK", "Allo Bank Indonesia", "allobank.com")
     )
 
-    val key by rememberSaveable { mutableStateOf(kodeSaham) }
+    var isRunning by rememberSaveable { mutableStateOf(true) }
+    var key by rememberSaveable { mutableStateOf(kodeSaham) }
 
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
     var grafikHistoriSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
@@ -165,7 +166,7 @@ fun DetailPerbandinganPrediksiScreen(
     detailPerbandinganPrediksiViewModel.setKodeSaham(key)
 
     if (isOnlinePage) {
-        LaunchedEffect(key1 = key) {
+        LaunchedEffect(key1 = isRunning) {
             detailPerbandinganPrediksiViewModel.getDetailPerbandinganPrediksi { prediksi, grafik, informasi ->
                 prediksi.value.let {
                     when (it) {
@@ -211,6 +212,9 @@ fun DetailPerbandinganPrediksiScreen(
                         is Resource.Error -> {
                             isLoading = false
                             isError = true
+                        }
+                        else -> {
+
                         }
                     }
                 }
@@ -279,279 +283,294 @@ fun DetailPerbandinganPrediksiScreen(
             }
         }
 
-        Scaffold(
-            topBar = { PageTopAppBar(navigateBack, key) }
-        ) {
-            it
-            Surface(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.height(50.dp))
+        if (isError == null || isError == false) {
+            Scaffold(
+                topBar = { PageTopAppBar(navigateBack, key) }
+            ) {
+                it
+                Surface(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                    TitleText(modifier = Modifier, judul = "Prediksi Saham $kodeSaham")
+                        TitleText(modifier = Modifier, judul = "Prediksi Saham $kodeSaham")
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (isLoading == false && isError == false) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            if (isLoading == false && isError == false) {
+                                Text(
+                                    text = "Harga Saham Saat Ini",
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 0.sp
+                                )
+
+                                Text(
+                                    text = hargaSahamSaatIni.toString(),
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    letterSpacing = 0.sp
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .shimmer()
+                                        .background(Color.Gray)
+                                        .width(130.dp)
+                                        .height(20.dp)
+                                        .background(Color.Gray)
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .shimmer()
+                                        .background(Color.Gray)
+                                        .width(65.dp)
+                                        .height(20.dp)
+                                        .background(Color.Gray)
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(50.dp))
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 15.dp, end = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
                             Text(
-                                text = "Harga Saham Saat Ini",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                letterSpacing = 0.sp
-                            )
-
-                            Text(
-                                text = hargaSahamSaatIni.toString(),
-                                fontSize = 20.sp,
+                                text = "Prediksi 1",
+                                fontSize = 15.sp,
                                 fontWeight = FontWeight.ExtraBold,
                                 letterSpacing = 0.sp
                             )
+
+                            Text(
+                                text = "Prediksi 2",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 0.sp
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(5.dp))
+
+                        if (isLoading == false && isError == false) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                Text(
+                                    text = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
+                                    fontSize = 15.sp,
+                                    color = DarkGrey1,
+                                    letterSpacing = 0.sp
+                                )
+
+                                Text(
+                                    text = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
+                                    fontSize = 15.sp,
+                                    color = DarkGrey1,
+                                    letterSpacing = 0.sp
+                                )
+                            }
                         } else {
-                            Box(
+                            Row(
                                 modifier = Modifier
-                                    .shimmer()
-                                    .background(Color.Gray)
-                                    .width(130.dp)
-                                    .height(20.dp)
-                                    .background(Color.Gray)
-                            )
+                                    .fillMaxWidth()
+                                    .padding(start = 15.dp, end = 15.dp),
+                                horizontalArrangement = Arrangement.SpaceAround
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .shimmer()
+                                        .background(Color.Gray)
+                                        .width(70.dp)
+                                        .height(20.dp)
+                                        .background(Color.Gray)
+                                )
 
-                            Box(
-                                modifier = Modifier
-                                    .shimmer()
-                                    .background(Color.Gray)
-                                    .width(65.dp)
-                                    .height(20.dp)
-                                    .background(Color.Gray)
-                            )
+                                Box(
+                                    modifier = Modifier
+                                        .shimmer()
+                                        .background(Color.Gray)
+                                        .width(70.dp)
+                                        .height(20.dp)
+                                        .background(Color.Gray)
+                                )
+                            }
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Text(
-                            text = "Prediksi 1",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 0.sp
-                        )
-
-                        Text(
-                            text = "Prediksi 2",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.ExtraBold,
-                            letterSpacing = 0.sp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    if (isLoading == false && isError == false) {
+                        /**
+                         * Detail Perbandingan Harga Close Saham
+                         */
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 15.dp, end = 15.dp),
                             horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            Text(
-                                text = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
-                                fontSize = 15.sp,
-                                color = DarkGrey1,
-                                letterSpacing = 0.sp
-                            )
-
-                            Text(
-                                text = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
-                                fontSize = 15.sp,
-                                color = DarkGrey1,
-                                letterSpacing = 0.sp
-                            )
-                        }
-                    } else {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 15.dp, end = 15.dp),
-                            horizontalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Box(
+                            Card(
                                 modifier = Modifier
-                                    .shimmer()
-                                    .background(Color.Gray)
-                                    .width(70.dp)
-                                    .height(20.dp)
-                                    .background(Color.Gray)
-                            )
+                                    .weight(1f)
+                                    .height(300.dp),
+                                shape = RoundedCornerShape(20.dp)
+                            ) {
+                                PrediksiSahamList(
+                                    hargaSahamSaatIni = hargaSahamSaatIni,
+                                    list = if (rmseLSTM!! <= rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
+                                )
+                            }
 
-                            Box(
+                            Spacer(Modifier.weight(0.1f))
+
+                            Card(
                                 modifier = Modifier
-                                    .shimmer()
-                                    .background(Color.Gray)
-                                    .width(70.dp)
-                                    .height(20.dp)
-                                    .background(Color.Gray)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    /**
-                     * Detail Perbandingan Harga Close Saham
-                     */
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 15.dp, end = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(300.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        ) {
-                            PrediksiSahamList(
-                                hargaSahamSaatIni = hargaSahamSaatIni,
-                                list = if (rmseLSTM!! <= rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
-                            )
+                                    .weight(1f)
+                                    .height(300.dp),
+                                shape = RoundedCornerShape(20.dp)
+                            ) {
+                                PrediksiSahamList(
+                                    hargaSahamSaatIni = hargaSahamSaatIni,
+                                    list = if (rmseLSTM!! > rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
+                                )
+                            }
                         }
 
-                        Spacer(Modifier.weight(0.1f))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                        Card(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(300.dp),
-                            shape = RoundedCornerShape(20.dp)
-                        ) {
-                            PrediksiSahamList(
-                                hargaSahamSaatIni = hargaSahamSaatIni,
-                                list = if (rmseLSTM!! > rmseGRU!!) prediksiLSTMList!! else prediksiGRUList!!
+                        /**
+                         * Grafik Prediksi Saham
+                         */
+                        if (isLoading == false && isError == false) {
+                            DetailPerbandinganPrediksiGrafikPrediksiSaham(
+                                Modifier,
+                                tanggalPrediksiList!!,
+                                hargaPenutupanPrediksiList!!,
+                                0,
+                                clickedPrediksiPoin,
+                                clickedPrediksiOffset,
                             )
+
+                            Spacer(modifier = Modifier.height(15.dp))
+
+                            MultiSelector(
+                                options = opsiPrediksi,
+                                optionsKey = opsiListPrediksi.map { it.first }.toTypedArray()
+                                    .toList(),
+                                selectedOption = selectedOpsiPrediksi,
+                                onOptionSelect = { opsi ->
+                                    selectedOpsiPrediksi = opsi
+                                    clickedPrediksiPoin.value = null
+                                    clickedPrediksiOffset.value = null
+                                    tanggalPrediksiList =
+                                        if (selectedOpsiPrediksi.second > 0) tanggalPrediksiListRaw!!.takeLast(
+                                            selectedOpsiPrediksi.second
+                                        ) else tanggalPrediksiListRaw
+                                    hargaPenutupanPrediksiList =
+                                        if (selectedOpsiPrediksi.first === "LSTM") hargaPenutupanPrediksiLSTMList!!.takeLast(
+                                            selectedOpsiPrediksi.second
+                                        ) else hargaPenutupanPrediksiGRUList!!.takeLast(
+                                            selectedOpsiPrediksi.second
+                                        )
+                                },
+                                modifier = Modifier
+                                    .padding(all = 16.dp)
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                            )
+                        } else {
+                            DetailPerbandinganPrediksiGrafikPrediksiSahamShimmer(Modifier)
                         }
-                    }
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                    /**
-                     * Grafik Prediksi Saham
-                     */
-                    if (isLoading == false && isError == false) {
-                        DetailPerbandinganPrediksiGrafikPrediksiSaham(
-                            Modifier,
-                            tanggalPrediksiList!!,
-                            hargaPenutupanPrediksiList!!,
-                            0,
-                            clickedPrediksiPoin,
-                            clickedPrediksiOffset,
-                        )
+                        /**
+                         * Grafik Histori Saham
+                         */
+                        if (isLoading == false && isError == false) {
+                            DetailPerbandinganPrediksiGrafikHistoriSaham(
+                                Modifier,
+                                tanggalHistoriList!!,
+                                hargaPenutupanHistoriList!!,
+                                selectedOpsiHistori.second,
+                                clickedHistoriPoin,
+                                clickedHistoriOffset
+                            )
 
-                        Spacer(modifier = Modifier.height(15.dp))
+                            Spacer(modifier = Modifier.height(15.dp))
 
-                        MultiSelector(
-                            options = opsiPrediksi,
-                            optionsKey = opsiListPrediksi.map { it.first }.toTypedArray().toList(),
-                            selectedOption = selectedOpsiPrediksi,
-                            onOptionSelect = { opsi ->
-                                selectedOpsiPrediksi = opsi
-                                clickedPrediksiPoin.value = null
-                                clickedPrediksiOffset.value = null
-                                tanggalPrediksiList =
-                                    if (selectedOpsiPrediksi.second > 0) tanggalPrediksiListRaw!!.takeLast(
-                                        selectedOpsiPrediksi.second
-                                    ) else tanggalPrediksiListRaw
-                                hargaPenutupanPrediksiList =
-                                    if (selectedOpsiPrediksi.first === "LSTM") hargaPenutupanPrediksiLSTMList!!.takeLast(
-                                        selectedOpsiPrediksi.second
-                                    ) else hargaPenutupanPrediksiGRUList!!.takeLast(
-                                        selectedOpsiPrediksi.second
-                                    )
-                            },
-                            modifier = Modifier
-                                .padding(all = 16.dp)
-                                .fillMaxWidth()
-                                .height(56.dp)
-                        )
-                    } else {
-                        DetailPerbandinganPrediksiGrafikPrediksiSahamShimmer(Modifier)
-                    }
+                            MultiSelector(
+                                options = opsiHistori,
+                                optionsKey = opsiListHistori.map { it.first }.toTypedArray()
+                                    .toList(),
+                                selectedOption = selectedOpsiHistori,
+                                onOptionSelect = { opsi ->
+                                    selectedOpsiHistori = opsi
+                                    clickedHistoriPoin.value = null
+                                    clickedHistoriOffset.value = null
+                                    tanggalHistoriList =
+                                        if (selectedOpsiHistori.second > 0) tanggalHistoriListRaw!!.takeLast(
+                                            selectedOpsiHistori.second
+                                        ) else tanggalHistoriListRaw
+                                    hargaPenutupanHistoriList =
+                                        if (selectedOpsiHistori.second > 0) hargaPenutupanHistoriListRaw!!.takeLast(
+                                            selectedOpsiHistori.second
+                                        ) else hargaPenutupanHistoriListRaw
+                                },
+                                modifier = Modifier
+                                    .padding(all = 16.dp)
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                            )
+                        } else {
+                            DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(Modifier)
+                        }
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                        Spacer(modifier = Modifier.height(50.dp))
 
-                    /**
-                     * Grafik Histori Saham
-                     */
-                    if (isLoading == false && isError == false) {
-                        DetailPerbandinganPrediksiGrafikHistoriSaham(
-                            Modifier,
-                            tanggalHistoriList!!,
-                            hargaPenutupanHistoriList!!,
-                            selectedOpsiHistori.second,
-                            clickedHistoriPoin,
-                            clickedHistoriOffset
-                        )
+                        /**
+                         * Informasi Saham
+                         */
+                        if (isLoading == false && isError == false) {
+                            val kodeSahamList = sahamList.map { it.kode }.toTypedArray().toList()
 
-                        Spacer(modifier = Modifier.height(15.dp))
-
-                        MultiSelector(
-                            options = opsiHistori,
-                            optionsKey = opsiListHistori.map { it.first }.toTypedArray().toList(),
-                            selectedOption = selectedOpsiHistori,
-                            onOptionSelect = { opsi ->
-                                selectedOpsiHistori = opsi
-                                clickedHistoriPoin.value = null
-                                clickedHistoriOffset.value = null
-                                tanggalHistoriList =
-                                    if (selectedOpsiHistori.second > 0) tanggalHistoriListRaw!!.takeLast(
-                                        selectedOpsiHistori.second
-                                    ) else tanggalHistoriListRaw
-                                hargaPenutupanHistoriList =
-                                    if (selectedOpsiHistori.second > 0) hargaPenutupanHistoriListRaw!!.takeLast(
-                                        selectedOpsiHistori.second
-                                    ) else hargaPenutupanHistoriListRaw
-                            },
-                            modifier = Modifier
-                                .padding(all = 16.dp)
-                                .fillMaxWidth()
-                                .height(56.dp)
-                        )
-                    } else {
-                        DetailPerbandinganPrediksiGrafikHistoriSahamShimmer(Modifier)
-                    }
-
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    /**
-                     * Informasi Saham
-                     */
-                    if (isLoading == false && isError == false) {
-                        val kodeSahamList = sahamList.map { it.kode }.toTypedArray().toList()
-
-                        DetailPerbandinganPrediksiTentangSaham(
-                            Modifier,
-                            sahamList[kodeSahamList.indexOf(key)],
-                            informasiSaham
-                        )
-                    } else {
-                        DetailPerbandinganPrediksiTentangSahamShimmer(Modifier)
+                            DetailPerbandinganPrediksiTentangSaham(
+                                Modifier,
+                                sahamList[kodeSahamList.indexOf(key)],
+                                informasiSaham
+                            )
+                        } else {
+                            DetailPerbandinganPrediksiTentangSahamShimmer(Modifier)
+                        }
                     }
                 }
             }
+        } else {
+            isRunning = false
+
+            Scaffold(
+                topBar = { PageTopAppBar(navigateBack, key) }
+            ) {
+                it
+                ErrorScreen(modifier = Modifier, onClick = {
+                    isRunning = true
+                })
+            }
         }
     } else {
-        ErrorScreen(Modifier)
+        OfflineScreen(Modifier)
     }
 }
 
@@ -573,7 +592,7 @@ fun DetailPerbandinganPrediksiGrafikPrediksiSaham(
             start = 15.dp,
             end = 15.dp
         ),
-        height = 250.dp,
+        height = 150.dp,
         visibility = LinearGraphVisibility(
             isHeaderVisible = false,
             isXAxisLabelVisible = true,
