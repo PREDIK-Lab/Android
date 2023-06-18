@@ -54,6 +54,8 @@ fun InformasiScreen(
                 list = informasiList,
                 onItemClick = onItemClick
             )
+
+            Spacer(modifier = modifier.height(50.dp))
         }
     }
 }

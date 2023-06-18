@@ -127,9 +127,6 @@ fun PanduanPenggunaanList(
     modifier: Modifier,
     list: Map<String, String>
 ) {
-    val listState = rememberLazyListState()
-
-//    LazyColumn(state = listState) {
     list.toList().forEachIndexed { index, it ->
         Card(
             modifier = modifier.padding(start = 15.dp, end = 15.dp),
@@ -193,18 +190,6 @@ fun PrediksiSahamList(
                     )
 
                     Spacer(Modifier.weight(1f))
-
-//                    Image(
-//                        painter = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) painterResource(
-//                            R.drawable.up_arrow
-//                        ) else painterResource(
-//                            R.drawable.down_arrow
-//                        ),
-//                        contentDescription = if ((index > 0 && item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) || item.prediksiHargaPenutupan >= hargaSahamSaatIni) "Up" else "Down",
-//                        modifier = Modifier
-//                            .size(50.dp)
-//                            .padding(end = 15.dp),
-//                    )
                 }
 
                 if (index != list.size - 1)
