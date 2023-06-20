@@ -1,6 +1,5 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -109,10 +108,14 @@ fun DetailPerbandinganPrediksiScreen(
     }
     var rmseGRU: Float? by rememberSaveable { mutableStateOf(0.0F) }
 
-    val opsiPrediksi = mapOf(
-        "LSTM" to 7,
-        "GRU" to 7
-    )
+    var opsiPrediksi: Map<String, Int> by rememberSaveable {
+        mutableStateOf(
+            mapOf(
+                "LSTM" to 7,
+//                "GRU" to 7
+            )
+        )
+    }
     val opsiListPrediksi = opsiPrediksi.toList()
     var selectedOpsiPrediksi by rememberSaveable { mutableStateOf(opsiListPrediksi[0]) }
     val clickedPrediksiPoin: MutableState<Pair<Any, Any>?> =
@@ -184,6 +187,18 @@ fun DetailPerbandinganPrediksiScreen(
                             rmseLSTM = it.data.rmseLSTM
                             rmseGRU = it.data.rmseGRU
 
+                            if (it.data.rmseLSTM <= it.data.rmseGRU)
+                                opsiPrediksi = mapOf(
+                                    "LSTM" to 7,
+                                    "GRU" to 7
+                                )
+                            else opsiPrediksi = mapOf(
+                                "GRU" to 7,
+                                "LSTM" to 7
+                            )
+
+                            selectedOpsiPrediksi = opsiPrediksi.toList()[0]
+
                             val tanggal =
                                 prediksiLSTMList!!.map { parseDayMonthYearFormat(it.tanggal) }
                                     .toTypedArray()
@@ -207,7 +222,8 @@ fun DetailPerbandinganPrediksiScreen(
                             hargaPenutupanPrediksiGRUList = hargaPenutupanGRU
                             hargaPenutupanPrediksiGRUListRaw = hargaPenutupanGRU
 
-                            hargaPenutupanPrediksiList = hargaPenutupanLSTM
+                            hargaPenutupanPrediksiList =
+                                if (it.data.rmseLSTM <= it.data.rmseGRU) hargaPenutupanLSTM else hargaPenutupanGRU
                         }
                         is Resource.Error -> {
                             isLoading = false
