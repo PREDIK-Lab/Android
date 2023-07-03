@@ -64,7 +64,7 @@ fun TentangAplikasiScreen(
 
                 DescriptionText(
                     modifier = Modifier,
-                    deskripsi = "PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan. Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia.\n\nSumber data saham yang digunakan berasal dari web finance.yahoo.com."
+                    deskripsi = "PREDIK merupakan aplikasi prediksi harga penutupan saham bank digital yang memiliki dua hasil perbandingan: hasil dengan metode Long Short-Term Memory (LSTM) dan Gated Recurrent Unit (GRU). Terdapat tiga bank digital yang digunakan di dalam aplikasi ini, yaitu Bank Neo Commerce, Bank Jago, dan Allo Bank Indonesia.\n\nSumber data saham yang digunakan berasal dari web finance.yahoo.com."
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))

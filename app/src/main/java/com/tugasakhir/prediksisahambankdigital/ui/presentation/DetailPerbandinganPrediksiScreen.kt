@@ -42,6 +42,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Grafik
 import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
+import com.tugasakhir.prediksisahambankdigital.ui.component.WarningBox
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DarkGrey1
 import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
@@ -75,7 +76,7 @@ fun DetailPerbandinganPrediksiScreen(
     )
 
     var isRunning by rememberSaveable { mutableStateOf(true) }
-    var key by rememberSaveable { mutableStateOf(kodeSaham) }
+    val key by rememberSaveable { mutableStateOf(kodeSaham) }
 
     var ukuran: Int? by rememberSaveable { mutableStateOf(0) }
     var grafikHistoriSahamList: List<Grafik>? by rememberSaveable { mutableStateOf(emptyList()) }
@@ -187,12 +188,12 @@ fun DetailPerbandinganPrediksiScreen(
                             rmseLSTM = it.data.rmseLSTM
                             rmseGRU = it.data.rmseGRU
 
-                            if (it.data.rmseLSTM <= it.data.rmseGRU)
-                                opsiPrediksi = mapOf(
+                            opsiPrediksi = if (it.data.rmseLSTM <= it.data.rmseGRU)
+                                mapOf(
                                     "LSTM" to 7,
                                     "GRU" to 7
                                 )
-                            else opsiPrediksi = mapOf(
+                            else mapOf(
                                 "GRU" to 7,
                                 "LSTM" to 7
                             )
@@ -309,6 +310,14 @@ fun DetailPerbandinganPrediksiScreen(
                         Spacer(modifier = Modifier.height(50.dp))
 
                         TitleText(modifier = Modifier, judul = "Prediksi Saham $kodeSaham")
+
+                        Spacer(modifier = Modifier.height(50.dp))
+
+                        WarningBox(
+                            modifier = Modifier,
+                            judul = "Disklaimer",
+                            deskripsi = "Hasil prediksi TIDAK dapat dijadikan patokan absolut dalam kegiatan jual/beli saham."
+                        )
 
                         Spacer(modifier = Modifier.height(50.dp))
 

@@ -30,6 +30,7 @@ import com.tugasakhir.prediksisahambankdigital.SahamItem
 import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
+import com.tugasakhir.prediksisahambankdigital.ui.component.WarningBox
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.defaultFontFamily
@@ -190,6 +191,10 @@ fun PerbandinganPrediksiScreen(
                             }
                         }
                     }
+
+                    Spacer(modifier = modifier.height(30.dp))
+
+                    WarningBox(modifier = modifier, judul = "Disklaimer", deskripsi = "Hasil prediksi TIDAK dapat dijadikan patokan absolut dalam kegiatan jual/beli saham.")
 
                     Spacer(modifier = modifier.height(30.dp))
 
