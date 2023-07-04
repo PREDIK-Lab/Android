@@ -11,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -137,3 +138,12 @@ fun ButtonText(modifier: Modifier, onClick: () -> Unit, judul: String) {
         Text(text = judul, color = Color.White, fontWeight = FontWeight.Bold, letterSpacing = 0.sp)
     }
 }
+
+@Composable
+fun ClickableTextStyle() = TextStyle(
+    fontSize = 15.sp,
+    fontFamily = defaultFontFamily,
+    fontWeight = FontWeight.Bold,
+    color = MaterialTheme.colors.primary,
+    letterSpacing = 0.sp
+)

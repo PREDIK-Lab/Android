@@ -18,7 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -32,6 +31,7 @@ import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksi
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.component.WarningBox
 import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.ClickableTextStyle
 import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
 import com.tugasakhir.prediksisahambankdigital.ui.theme.defaultFontFamily
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
@@ -194,10 +194,6 @@ fun PerbandinganPrediksiScreen(
 
                     Spacer(modifier = modifier.height(30.dp))
 
-                    WarningBox(modifier = modifier, judul = "Disklaimer", deskripsi = "Hasil prediksi TIDAK dapat dijadikan patokan absolut dalam kegiatan jual/beli saham.")
-
-                    Spacer(modifier = modifier.height(30.dp))
-
                     ButtonText(modifier = Modifier.padding(start = 15.dp, end = 15.dp), onClick = {
                         perbandinganPrediksiViewModel.setKodeSaham(dropdownSelectedKodeSaham)
 
@@ -205,6 +201,14 @@ fun PerbandinganPrediksiScreen(
                         keyRaw = key
 
                     }, judul = "Prediksi")
+
+                    Spacer(modifier = modifier.height(50.dp))
+
+                    WarningBox(
+                        modifier = modifier,
+                        judul = "Disklaimer",
+                        deskripsi = "Hasil prediksi TIDAK dapat dijadikan patokan absolut dalam kegiatan jual/beli saham."
+                    )
 
                     Spacer(modifier = modifier.height(50.dp))
 
@@ -269,13 +273,7 @@ fun PerbandinganPrediksiScreen(
                         ClickableText(
                             modifier = Modifier.padding(start = 15.dp, end = 15.dp),
                             text = AnnotatedString("Selengkapnya..."),
-                            style = TextStyle(
-                                fontSize = 15.sp,
-                                fontFamily = defaultFontFamily,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colors.primary,
-                                letterSpacing = 0.sp
-                            ),
+                            style = ClickableTextStyle(),
                             onClick = {
                                 navigateToDetailPerbandinganPrediksi(keyRaw)
                             }
