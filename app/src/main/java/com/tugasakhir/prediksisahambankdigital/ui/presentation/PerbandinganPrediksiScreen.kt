@@ -30,10 +30,7 @@ import com.tugasakhir.prediksisahambankdigital.data.Resource
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBox
 import com.tugasakhir.prediksisahambankdigital.ui.component.PerbandinganPrediksiBoxShimmer
 import com.tugasakhir.prediksisahambankdigital.ui.component.WarningBox
-import com.tugasakhir.prediksisahambankdigital.ui.theme.ButtonText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.ClickableTextStyle
-import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.defaultFontFamily
+import com.tugasakhir.prediksisahambankdigital.ui.theme.*
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.roundDecimal
 import com.tugasakhir.prediksisahambankdigital.viewmodel.PerbandinganPrediksiViewModel
@@ -225,7 +222,8 @@ fun PerbandinganPrediksiScreen(
                                 PerbandinganPrediksiItem(
                                     judul = "Harga penutupan saham hari ini",
                                     hargaPenutupan = roundDecimal(hargaPenutupanSaatIni!!),
-                                    gambarKeterangan = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24
+                                    gambarKeterangan = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                    warna = if (hargaPenutupanSaatIni!! >= hargaPenutupanSebelumnya!!) Green1 else Red1
                                 )
                             )
                         } else {
@@ -251,12 +249,14 @@ fun PerbandinganPrediksiScreen(
                                     deskripsi = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
                                     hargaPenutupan = roundDecimal(hargaPenutupanBesok1!!),
                                     gambarKeterangan = if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                    warna = if (hargaPenutupanBesok1!! >= hargaPenutupanSaatIni!!) Green1 else Red1
                                 ),
                                 PerbandinganPrediksiItem(
                                     judul = "Prediksi harga penutupan berikutnya",
                                     deskripsi = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
                                     hargaPenutupan = roundDecimal(hargaPenutupanBesok2!!),
                                     gambarKeterangan = if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) R.drawable.baseline_trending_up_24 else R.drawable.baseline_trending_down_24,
+                                    warna = if (hargaPenutupanBesok2!! >= hargaPenutupanSaatIni!!) Green1 else Red1
                                 )
                             )
                         } else {

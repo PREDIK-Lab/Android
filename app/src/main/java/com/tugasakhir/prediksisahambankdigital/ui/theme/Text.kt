@@ -66,12 +66,12 @@ fun DescriptionBoxText(modifier: Modifier, deskripsi: String) {
 }
 
 @Composable
-fun NumberBoxText(modifier: Modifier, judul: Number, fontSize: TextUnit = 23.sp) {
+fun NumberBoxText(modifier: Modifier, judul: Number, fontSize: TextUnit = 23.sp, color: Color? = null) {
     Text(
         judul.toString(),
         modifier = Modifier
             .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 15.dp),
-        color = MaterialTheme.colors.primary,
+        color = color ?: MaterialTheme.colors.primary,
         fontWeight = FontWeight.Bold,
         fontSize = fontSize,
         letterSpacing = 0.sp
