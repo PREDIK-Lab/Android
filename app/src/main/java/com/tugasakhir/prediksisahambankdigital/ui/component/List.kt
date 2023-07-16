@@ -178,16 +178,29 @@ fun PrediksiSahamList(
 
                     Spacer(Modifier.weight(1f))
 
-                    //TitleBoxText(modifier = modifier, judul = item.prediksiHargaPenutupan.toString())
-
-                    Text(
-                        text = roundDecimal(item.prediksiHargaPenutupan).toString(),
-                        modifier = modifier
-                            .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 0.sp
-                    )
+                    /*
+                     * Index = 0 -> prediksi harga penutupan akan dibandingkan dengan harga saham saat ini
+                     */
+                    if (index > 0)
+                        Text(
+                            text = roundDecimal(item.prediksiHargaPenutupan).toString(),
+                            modifier = modifier
+                                .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.sp,
+                            color = if (item.prediksiHargaPenutupan >= list[index - 1].prediksiHargaPenutupan) Green1 else Red1
+                        )
+                    else
+                        Text(
+                            text = roundDecimal(item.prediksiHargaPenutupan).toString(),
+                            modifier = modifier
+                                .padding(start = 15.dp, end = 15.dp, top = 20.dp, bottom = 20.dp),
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 0.sp,
+                            color = if (item.prediksiHargaPenutupan >= hargaSahamSaatIni) Green1 else Red1
+                        )
 
                     Spacer(Modifier.weight(1f))
                 }

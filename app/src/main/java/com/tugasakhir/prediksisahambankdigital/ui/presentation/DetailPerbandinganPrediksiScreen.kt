@@ -90,6 +90,8 @@ fun DetailPerbandinganPrediksiScreen(
         SahamItem("BBHI.JK", "Allo Bank Indonesia", "allobank.com")
     )
 
+    val kodeSahamList = sahamList.map { it.kode }.toTypedArray().toList()
+
     var isRunning by rememberSaveable { mutableStateOf(true) }
     val key by rememberSaveable { mutableStateOf(kodeSaham) }
 
@@ -327,6 +329,7 @@ fun DetailPerbandinganPrediksiScreen(
                     topEnd = 20.dp
                 )
             ) {
+
                 Scaffold(
                     topBar = { PageTopAppBar(navigateBack, key) },
                     modifier = Modifier.pointerInput(Unit) {
@@ -351,7 +354,7 @@ fun DetailPerbandinganPrediksiScreen(
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Spacer(modifier = Modifier.height(50.dp))
 
-                            TitleText(modifier = Modifier, judul = "Prediksi Saham $kodeSaham")
+                            TitleText(modifier = Modifier, judul = "Prediksi Saham ${sahamList[kodeSahamList.indexOf(key)].nama} ($kodeSaham)")
 
                             Spacer(modifier = Modifier.height(50.dp))
 
@@ -469,20 +472,6 @@ fun DetailPerbandinganPrediksiScreen(
                                             }
                                         }
                                     )
-
-//                                Text(
-//                                    text = "Metode: " + if (rmseLSTM!! <= rmseGRU!!) "LSTM" else "GRU",
-//                                    fontSize = 15.sp,
-//                                    color = DarkGrey1,
-//                                    letterSpacing = 0.sp
-//                                )
-//
-//                                Text(
-//                                    text = "Metode: " + if (rmseLSTM!! > rmseGRU!!) "LSTM" else "GRU",
-//                                    fontSize = 15.sp,
-//                                    color = DarkGrey1,
-//                                    letterSpacing = 0.sp
-//                                )
                                 }
                             } else {
                                 Row(
@@ -645,9 +634,6 @@ fun DetailPerbandinganPrediksiScreen(
                              * Informasi Saham
                              */
                             if (isLoading == false && isError == false) {
-                                val kodeSahamList =
-                                    sahamList.map { it.kode }.toTypedArray().toList()
-
                                 DetailPerbandinganPrediksiTentangSaham(
                                     Modifier,
                                     sahamList[kodeSahamList.indexOf(key)],

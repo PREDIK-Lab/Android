@@ -106,6 +106,11 @@ fun NavHostContainer(
                         navController.navigateUp()
                     }
                 )
+
+//                var saham = navController.previousBackStackEntry?.arguments?.getParcelable<SahamItem>("saham")
+//
+//                // Using that Parcelable in the destination Composable
+//                DetailPerbandinganPrediksiScreen(navController, saham = saham)
             }
 
             // Panduan Penggunaan

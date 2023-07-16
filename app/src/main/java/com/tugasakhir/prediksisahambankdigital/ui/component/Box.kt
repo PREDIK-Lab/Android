@@ -127,7 +127,7 @@ fun PerbandinganPrediksiBox(
                 }
 
                 Row(Modifier.weight(1f, false)) {
-                    NumberBoxText(modifier = Modifier, judul = it.hargaPenutupan)
+                    NumberBoxText(modifier = Modifier, judul = it.hargaPenutupan, color = it.warna)
 
                     Spacer(modifier = Modifier.weight(1f))
 
