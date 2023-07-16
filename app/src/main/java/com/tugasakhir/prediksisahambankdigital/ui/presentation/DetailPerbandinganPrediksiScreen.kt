@@ -3,16 +3,15 @@
 package com.tugasakhir.prediksisahambankdigital.ui.presentation
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -47,10 +46,7 @@ import com.tugasakhir.prediksisahambankdigital.domain.model.Informasi
 import com.tugasakhir.prediksisahambankdigital.ui.component.MultiSelector
 import com.tugasakhir.prediksisahambankdigital.ui.component.PrediksiSahamList
 import com.tugasakhir.prediksisahambankdigital.ui.component.WarningBox
-import com.tugasakhir.prediksisahambankdigital.ui.theme.ClickableTextStyle
-import com.tugasakhir.prediksisahambankdigital.ui.theme.DescriptionText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.SubTitleText
-import com.tugasakhir.prediksisahambankdigital.ui.theme.TitleText
+import com.tugasakhir.prediksisahambankdigital.ui.theme.*
 import com.tugasakhir.prediksisahambankdigital.ui.util.PageTopAppBar
 import com.tugasakhir.prediksisahambankdigital.ui.util.checkConnectivityStatus
 import com.tugasakhir.prediksisahambankdigital.ui.util.parseDayMonthYearFormat
@@ -60,6 +56,7 @@ import com.tugasakhir.prediksisahambankdigital.viewmodel.DetailPerbandinganPredi
 import com.valentinilk.shimmer.shimmer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.*
 
 @Composable
 fun DetailPerbandinganPrediksiScreen(
@@ -322,7 +319,13 @@ fun DetailPerbandinganPrediksiScreen(
                 sheetState = bottomSheetScaffoldStateMetode,
                 sheetElevation = 100.dp,
                 sheetContent = {
-                    DetailPerbandinganPrediksiMetode(selectedMetode!!)
+                    DetailPerbandinganPrediksiMetode(selectedMetode!!) {
+                        coroutineScope.launch {
+                            if (bottomSheetScaffoldStateMetode.isVisible) {
+                                bottomSheetScaffoldStateMetode.hide()
+                            }
+                        }
+                    }
                 },
                 sheetShape = RoundedCornerShape(
                     topStart = 20.dp,
@@ -354,7 +357,10 @@ fun DetailPerbandinganPrediksiScreen(
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Spacer(modifier = Modifier.height(50.dp))
 
-                            TitleText(modifier = Modifier, judul = "Prediksi Saham ${sahamList[kodeSahamList.indexOf(key)].nama} ($kodeSaham)")
+                            TitleText(
+                                modifier = Modifier,
+                                judul = "Prediksi Saham ${sahamList[kodeSahamList.indexOf(key)].nama} ($kodeSaham)"
+                            )
 
                             Spacer(modifier = Modifier.height(50.dp))
 
@@ -1088,7 +1094,7 @@ fun DetailPerbandinganPrediksiTentangSahamShimmer(modifier: Modifier) {
 }
 
 @Composable
-fun DetailPerbandinganPrediksiMetode(selectedMetode: String) {
+fun DetailPerbandinganPrediksiMetode(selectedMetode: String, onClick: () -> Unit) {
     val judul = "Metode " + when (selectedMetode) {
         "LSTM" -> "LSTM"
         "GRU" -> "GRU"
@@ -1108,9 +1114,23 @@ fun DetailPerbandinganPrediksiMetode(selectedMetode: String) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp),
+                .padding(top = 20.dp, bottom = 20.dp),
         ) {
-            SubTitleText(Modifier, judul = judul)
+            Row {
+                SubTitleText(Modifier, judul = judul)
+
+                Spacer(Modifier.weight(1f))
+
+                Icon(
+                    imageVector = Icons.Filled.Close,
+                    tint = LightGrey1,
+                    modifier = Modifier
+                        .padding(start = 15.dp, end = 15.dp)
+                        .size(30.dp)
+                        .clickable { onClick() },
+                    contentDescription = "Tutup"
+                )
+            }
 
             Spacer(modifier = Modifier.height(50.dp))
 
