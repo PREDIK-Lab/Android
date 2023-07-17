@@ -366,7 +366,7 @@ fun DetailPerbandinganPrediksiScreen(
 
                             WarningBox(
                                 modifier = Modifier,
-                                judul = "Disklaimer",
+                                judul = "Peringatan",
                                 deskripsi = "Hasil prediksi TIDAK dapat dijadikan patokan absolut dalam kegiatan jual/beli saham."
                             )
 

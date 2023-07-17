@@ -33,7 +33,7 @@ fun ErrorScreen(modifier: Modifier, onClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Text(
-                    text = "Maaf, data tidak bisa dimuat...",
+                    text = "Maaf, sistem ini mengalami gangguan...",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
